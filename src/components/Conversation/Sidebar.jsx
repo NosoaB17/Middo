@@ -1,54 +1,16 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import SearchBar from "./Sidebar/SearchBar";
 import Tabs from "./Sidebar/Tabs";
 import ConversationList from "./Sidebar/ConversationList";
 import ActionsButton from "./Sidebar/ActionsButton";
-import NewConversationModal from "./Sidebar/NewConversationModal";
-import NewCallModal from "./Sidebar/NewCallModal";
+import NewConversationModal from "./Sidebar/ActionsButton/NewConversationModal";
+import NewCallModal from "./Sidebar/ActionsButton/NewCallModal";
+import { ChatContext } from "../../contexts/ChatContext";
 
 const Sidebar = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
-
-  const conversations = [
-    {
-      id: 1,
-      avatar:
-        "https://plus.unsplash.com/premium_photo-1675865396004-c7b86406affe?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D",
-      name: "Dudaji VN",
-      lastMessage:
-        "I'm done: processing messages with middo bot extension, pro...",
-      time: "5:59 PM",
-    },
-    {
-      id: 2,
-      avatar:
-        "https://plus.unsplash.com/premium_photo-1675865396004-c7b86406affe?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D",
-      name: "Dudaji All",
-      lastMessage:
-        "There was a problem with middo translation due to network...",
-      time: "8:05 AM",
-    },
-  ];
-
-  const contacts = [
-    {
-      id: 1,
-      avatar:
-        "https://plus.unsplash.com/premium_photo-1675865396004-c7b86406affe?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D",
-      name: "shhong",
-      lastMessage: "@sipqko",
-      time: "",
-    },
-    {
-      id: 2,
-      avatar:
-        "https://plus.unsplash.com/premium_photo-1675865396004-c7b86406affe?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dmlldG5hbXxlbnwwfHwwfHx8MA%3D%3D",
-      name: "BaoSon",
-      lastMessage: "",
-      time: "",
-    },
-  ];
+  const { data } = useContext(ChatContext);
 
   const openModal = (modalName) => {
     setActiveModal(modalName);
@@ -85,8 +47,7 @@ const Sidebar = () => {
             <div className="relative flex flex-col">
               <ConversationList
                 activeTab={activeTab}
-                conversations={conversations}
-                contacts={contacts}
+                conversations={data.conversations}
               />
             </div>
           </div>

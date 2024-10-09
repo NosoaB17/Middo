@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 const Tabs = ({ activeTab, setActiveTab }) => {
   const tabs = [
     {
       id: "all",
       label: "All",
-      icon: <span class="material-symbols-outlined">forum</span>,
+      icon: <span className="material-symbols-outlined">forum</span>,
     },
     {
       id: "contacts",
       label: "Contacts",
       icon: (
-        <span class="material-symbols-outlined">perm_contact_calendar</span>
+        <span className="material-symbols-outlined">perm_contact_calendar</span>
       ),
     },
     {
       id: "archive",
       label: "Archive",
-      icon: <span class="material-symbols-outlined">inventory_2</span>,
+      icon: <span className="material-symbols-outlined">inventory_2</span>,
     },
     {
       id: "waiting",
       label: "Waiting",
-      icon: <span class="material-symbols-outlined">sms</span>,
+      icon: <span className="material-symbols-outlined">sms</span>,
     },
   ];
 
@@ -50,6 +50,11 @@ const Tabs = ({ activeTab, setActiveTab }) => {
       </div>
     </div>
   );
+};
+
+Tabs.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  setActiveTab: PropTypes.func.isRequired,
 };
 
 export default Tabs;

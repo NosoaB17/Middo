@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import SettingsMenu from "./SettingsMenu";
+import { useState } from "react";
+import SettingsMenu from "./ActionsButton/SettingsMenu";
+import PropTypes from "prop-types";
 
 const TooltipButton = ({ icon, title, onClick }) => {
   return (
@@ -17,7 +18,7 @@ const TooltipButton = ({ icon, title, onClick }) => {
   );
 };
 
-const ActionButton = ({ onNewConversation, onNewCall }) => {
+const ActionsButton = ({ onNewConversation, onNewCall }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   return (
     <div className="relative">
@@ -43,4 +44,15 @@ const ActionButton = ({ onNewConversation, onNewCall }) => {
   );
 };
 
-export default ActionButton;
+TooltipButton.propTypes = {
+  icon: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+ActionsButton.propTypes = {
+  onNewConversation: PropTypes.func.isRequired,
+  onNewCall: PropTypes.func.isRequired,
+};
+
+export default ActionsButton;
