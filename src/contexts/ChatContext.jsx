@@ -11,6 +11,7 @@ export const ChatContextProvider = ({ children }) => {
     chatId: "null",
     user: {},
     conversations: [],
+    searchResults: null,
   };
 
   const chatReducer = (state, action) => {
@@ -28,6 +29,16 @@ export const ChatContextProvider = ({ children }) => {
         return {
           ...state,
           conversations: action.payload,
+        };
+      case "SET_SEARCH_RESULTS":
+        return {
+          ...state,
+          searchResults: action.payload,
+        };
+      case "CLEAR_SEARCH_RESULTS":
+        return {
+          ...state,
+          searchResults: null,
         };
       default:
         return state;
