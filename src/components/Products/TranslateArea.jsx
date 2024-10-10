@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
-import axios from "axios";
 import copyLogo from "../../assets/products/copy.svg";
 import speakerLogo from "../../assets/products/speaker.svg";
 import editLogo from "../../assets/products/edit.svg";
 import checkIcon from "../../assets/products/check.svg";
+import { textToSpeech } from "../../services/translationService";
 
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -114,20 +114,9 @@ const TranslateArea = ({
 
   const handleSpeak = useCallback(async () => {
     try {
-      const response = await axios({
-        method: "get",
-        url: "http://localhost:8000/tts",
-        params: {
-          text: encodeURIComponent(text),
-          lang: language,
-        },
-        responseType: "blob",
-      });
-
-      const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
+      const audioBlob = await textToSpeech(text, language);
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
-
       audio.play();
     } catch (error) {
       console.error("Error playing audio:", error);
