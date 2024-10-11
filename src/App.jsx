@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,6 +10,7 @@ import Homepage from "./pages/Homepage";
 import Products from "./pages/Products";
 import Auth from "./pages/Auth";
 import Conversation from "./pages/Conversation";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const Navigation = () => {
   const location = useLocation();
@@ -27,8 +27,22 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/signin" element={<Auth />} />
-          <Route path="/conversation" element={<Conversation />} />
+          <Route
+            path="/signin"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <Auth />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/conversation"
+            element={
+              <ProtectedRoute>
+                <Conversation />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>
