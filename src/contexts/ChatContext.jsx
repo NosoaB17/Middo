@@ -18,6 +18,7 @@ export const ChatContextProvider = ({ children }) => {
     user: {},
     conversations: [],
     messages: [],
+    searchResults: [], // Thêm trường này để lưu kết quả tìm kiếm
   };
 
   const chatReducer = (state, action) => {
@@ -26,7 +27,10 @@ export const ChatContextProvider = ({ children }) => {
         return {
           ...state,
           user: action.payload,
-          chatId: action.payload.chatId,
+          chatId:
+            currentUser.uid > action.payload.uid
+              ? currentUser.uid + action.payload.uid
+              : action.payload.uid + currentUser.uid,
         };
       case "SET_CONVERSATIONS":
         return {
@@ -37,6 +41,16 @@ export const ChatContextProvider = ({ children }) => {
         return {
           ...state,
           messages: action.payload,
+        };
+      case "SET_SEARCH_RESULTS":
+        return {
+          ...state,
+          searchResults: action.payload,
+        };
+      case "CLEAR_SEARCH_RESULTS":
+        return {
+          ...state,
+          searchResults: [],
         };
       default:
         return state;

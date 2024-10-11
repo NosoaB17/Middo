@@ -1,11 +1,13 @@
 import { useState, useContext } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { dispatch } = useContext(ChatContext);
+  const { currentUser } = useContext(AuthContext);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -19,17 +21,18 @@ const SearchBar = () => {
       );
 
       const querySnapshot = await getDocs(q);
-      const users = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const users = querySnapshot.docs
+        .map((doc) => ({
+          uid: doc.id,
+          ...doc.data(),
+        }))
+        .filter((user) => user.uid !== currentUser.uid); // Exclude current user from results
 
       dispatch({ type: "SET_SEARCH_RESULTS", payload: users });
     } catch (error) {
       console.error("Error searching users:", error);
     }
   };
-
   return (
     <>
       <form onSubmit={handleSearch} className="w-full">
