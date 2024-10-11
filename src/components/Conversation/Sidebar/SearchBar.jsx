@@ -31,26 +31,36 @@ const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-full">
-      <div className="relative w-full overflow-hidden rounded-xl border bg-background transition-all">
-        <div className="flex h-11 pl-1 transition-all">
-          <input
-            placeholder="Search users"
-            className="w-full border-0 bg-inherit p-2 ring-0 focus:outline-none"
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="flex aspect-square h-full items-center justify-center p-2 text-primary disabled:text-text dark:text-neutral-50"
-            disabled={!searchTerm.trim()}
-          >
-            <span className="material-symbols-outlined">search</span>
-          </button>
+    <>
+      <form onSubmit={handleSearch} className="w-full">
+        <div className="relative w-full overflow-hidden rounded-xl border bg-background transition-all">
+          <div className="flex h-11 pl-1 transition-all">
+            <input
+              placeholder="Search users"
+              className="w-full border-0 bg-inherit p-2 ring-0 focus:outline-none"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="flex h-11 w-11 items-center bg-inherit ">
+              <button
+                type="submit"
+                className="flex aspect-square h-full items-center justify-center p-2 text-primary disabled:text-text "
+                disabled={!searchTerm.trim()}
+              >
+                <span className="material-symbols-outlined">search</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+      <button
+        type="button"
+        className="inline-flex items-center justify-center focus:outline-nonetransition-all  font-medium bg-neutral-50 text-neutral-700 md:hover:bg-neutral-100 active:!bg-neutral-200   rounded-full p-0 shrink-0 md:w-9 md:h-9 w-11 h-11"
+      >
+        <span className="material-symbols-outlined">filter_list</span>
+      </button>
+    </>
   );
 };
 

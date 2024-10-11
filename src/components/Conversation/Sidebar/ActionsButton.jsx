@@ -4,12 +4,12 @@ import PropTypes from "prop-types";
 
 const TooltipButton = ({ icon, title, onClick }) => {
   return (
-    <div className="relative group">
+    <div className="relative">
       <button
         onClick={onClick}
         className="inline-flex items-center justify-center focus:outline-none transition-all bg-neutral-100 group-hover:bg-neutral-200 rounded-full relative p-0 shrink-0 md:w-9 md:h-9 w-11 h-11"
       >
-        <span className="material-symbols-outlined">{icon}</span>
+        <span className="material-symbols-outlined inline-block ">{icon}</span>
       </button>
       <div className="absolute top-full left-1/2 transform-translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
         {title}
@@ -21,7 +21,7 @@ const TooltipButton = ({ icon, title, onClick }) => {
 const ActionsButton = ({ onNewConversation, onNewCall }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   return (
-    <div className="relative">
+    <div>
       <div className="flex gap-3">
         <TooltipButton
           icon="edit_square"
