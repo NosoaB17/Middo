@@ -1,6 +1,12 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { onSnapshot, doc } from "firebase/firestore";
+import {
+  onSnapshot,
+  doc,
+  collection,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export const ChatContext = createContext();
@@ -11,7 +17,7 @@ export const ChatContextProvider = ({ children }) => {
     chatId: "null",
     user: {},
     conversations: [],
-    searchResults: null,
+    messages: [],
   };
 
   const chatReducer = (state, action) => {
@@ -20,25 +26,17 @@ export const ChatContextProvider = ({ children }) => {
         return {
           ...state,
           user: action.payload,
-          chatId:
-            currentUser.uid > action.payload.uid
-              ? currentUser.uid + action.payload.uid
-              : action.payload.uid + currentUser.uid,
+          chatId: action.payload.chatId,
         };
       case "SET_CONVERSATIONS":
         return {
           ...state,
           conversations: action.payload,
         };
-      case "SET_SEARCH_RESULTS":
+      case "SET_MESSAGES":
         return {
           ...state,
-          searchResults: action.payload,
-        };
-      case "CLEAR_SEARCH_RESULTS":
-        return {
-          ...state,
-          searchResults: null,
+          messages: action.payload,
         };
       default:
         return state;
@@ -49,21 +47,42 @@ export const ChatContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (currentUser?.uid) {
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-        if (doc.exists()) {
-          const conversations = Object.entries(doc.data())
-            .map(([chatId, data]) => ({
-              id: chatId,
-              ...data,
-            }))
-            .sort((a, b) => b.date - a.date);
-          dispatch({ type: "SET_CONVERSATIONS", payload: conversations });
+      const unsubUserChats = onSnapshot(
+        doc(db, "userChats", currentUser.uid),
+        (doc) => {
+          if (doc.exists()) {
+            const conversations = Object.entries(doc.data()).map(
+              ([id, data]) => ({
+                id,
+                ...data,
+              })
+            );
+            dispatch({ type: "SET_CONVERSATIONS", payload: conversations });
+          }
         }
-      });
+      );
 
-      return () => unsub();
+      return () => unsubUserChats();
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (state.chatId !== "null") {
+      const q = query(
+        collection(db, "chats", state.chatId, "messages"),
+        orderBy("date", "asc")
+      );
+      const unsubMessages = onSnapshot(q, (snapshot) => {
+        const messages = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        dispatch({ type: "SET_MESSAGES", payload: messages });
+      });
+
+      return () => unsubMessages();
+    }
+  }, [state.chatId]);
 
   return (
     <ChatContext.Provider value={{ data: state, dispatch }}>
