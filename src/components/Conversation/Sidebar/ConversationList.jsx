@@ -17,7 +17,7 @@ const ConversationList = () => {
   };
 
   return (
-    <div className="overflow-y-auto">
+    <div className="h-full overflow-y-auto">
       {data.conversations.map((conv) => (
         <div
           key={conv.id}

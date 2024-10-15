@@ -10,42 +10,41 @@ const Header = () => {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   return (
-    <div className="fixed z-10 flex h-14 w-full items-center justify-between bg-white/80 shadow-2 backdrop-blur-xl dark:bg-neutral-900">
-      <div className="relative z-50 flex h-header w-full items-center justify-between gap-1 bg-primary-100 py-4 pl-[1vw] pr-[5vw] dark:border-neutral-800 dark:bg-neutral-900 md:gap-5 md:pl-[5vw]">
+    <div className="fixed z-10 flex h-14 w-full items-center justify-between bg-white/80 shadow-2 backdrop-blur-xl ">
+      <div className="relative z-50 flex h-header w-full items-center justify-between gap-1 bg-primary-100 py-4 pl-[1vw] pr-[5vw]  md:gap-5 md:pl-[5vw]">
         <a
-          className="flex w-[60px] flex-row justify-start gap-2 divide-x-[2px] divide-neutral-900"
+          className="flex w-[60px] flex-row justify-start gap-2 divide-x-[2px] "
           href="/"
         >
-          <img src={Logo} alt="Middo Logo" />
+          <img src={Logo} alt="MiddoLogo" />
         </a>
         <div className="z-0 flex-1">
           <div className="hidden w-screen flex-row items-stretch justify-center shadow-none md:!ml-0 md:flex md:w-auto md:items-center md:gap-1 lg:gap-5">
             <a
               target="_self"
-              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 dark:text-neutral-100 md:px-2 md:hover:bg-primary-200 dark:md:hover:bg-neutral-600 md:hover:text-primary dark:md:hover:text-neutral-50 md:active:bg-primary-300 lg:px-3"
+              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 md:px-2 md:hover:bg-[#d0def1]  md:hover:text-[#3d88ed] md:active:bg-primary-300 lg:px-3"
               href="/solutions"
             >
               Solution
             </a>
             <a
               target="_self"
-              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 dark:text-neutral-100 md:px-2 md:hover:bg-primary-200 dark:md:hover:bg-neutral-600 md:hover:text-primary dark:md:hover:text-neutral-50 md:active:bg-primary-300 lg:px-3"
+              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 md:px-2 md:hover:bg-[#d0def1]  md:hover:text-[#3d88ed] md:active:bg-primary-300 lg:px-3"
               href="/products"
             >
               Products
             </a>
+
             <a
               target="_blank"
-              rel="noreferrer"
-              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 dark:text-neutral-100 md:px-2 md:hover:bg-primary-200 dark:md:hover:bg-neutral-600 md:hover:text-primary dark:md:hover:text-neutral-50 md:active:bg-primary-300 lg:px-3"
+              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 md:px-2 md:hover:bg-[#d0def1]  md:hover:text-[#3d88ed] md:active:bg-primary-300 lg:px-3"
               href="https://dudaji.vn/#contact"
             >
               Contact Us
             </a>
             <a
               target="_blank"
-              rel="noreferrer"
-              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 dark:text-neutral-100 md:px-2 md:hover:bg-primary-200 dark:md:hover:bg-neutral-600 md:hover:text-primary dark:md:hover:text-neutral-50 md:active:bg-primary-300 lg:px-3"
+              className="flex h-9 items-center justify-center gap-2 rounded-xl py-2 font-semibold leading-[18px] text-neutral-700 md:px-2 md:hover:bg-[#d0def1]  md:hover:text-[#3d88ed] md:active:bg-primary-300 lg:px-3"
               href="https://docs.middo.app/"
             >
               Docs

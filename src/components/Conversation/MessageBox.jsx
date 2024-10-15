@@ -4,10 +4,12 @@ import InputBox from "./MessageBox/InputBox";
 
 const MessageBox = () => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-1 flex-col overflow-hidden rounded-lg bg-card md:rounded-none">
       <Header />
-      <MessageList />
-      <InputBox />
+      <div className="relative flex flex-1 flex-col overflow-hidden">
+        <MessageList />
+        <InputBox />
+      </div>
     </div>
   );
 };

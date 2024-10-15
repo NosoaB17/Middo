@@ -74,10 +74,8 @@ const createHashtagFromDisplayName = (displayName) => {
 const Header = () => {
   const { data } = useContext(ChatContext);
 
-  console.log("User data in Header:", data.user);
-
   return (
-    <div className="flex w-full items-center border-b px-1 py-1  md:px-3">
+    <div className="flex w-full items-center border-b px-1 pt-2.5 pb-1 md:px-3">
       <div className="flex flex-1 items-center gap-2">
         <div className="flex items-center gap-2 active:opacity-30 md:cursor-pointer">
           <div className="relative">

@@ -28,61 +28,61 @@ const MessageList = () => {
   let lastDate = null;
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-      {data.messages.map((message, index) => {
-        const showDateSeparator = lastDate !== formatDate(message.date);
-        if (showDateSeparator) {
-          lastDate = formatDate(message.date);
-        }
+    <div className="relative flex h-full w-full flex-1 overflow-hidden">
+      {" "}
+      <div className="relative bg-primary/5 flex w-full flex-1 flex-col gap-2.5 overflow-x-hidden overflow-y-scroll px-2 md:px-3">
+        {data.messages.map((message, index) => {
+          const showDateSeparator = lastDate !== formatDate(message.date);
+          if (showDateSeparator) {
+            lastDate = formatDate(message.date);
+          }
 
-        const isCurrentUser = message.senderId === currentUser.uid;
+          const isCurrentUser = message.senderId === currentUser.uid;
 
-        return (
-          <React.Fragment key={message.id}>
-            {showDateSeparator && (
-              <div className="text-center text-xs text-gray-500 my-2">
-                <span className="text-xs font-light text-neutral-500 ">
-                  {lastDate}, {formatTime(message.date)}
-                </span>
-              </div>
-            )}
-            <div
-              className={`relative flex ${
-                isCurrentUser ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`relative max-w-[70%] rounded-2xl p-3 ${
-                  isCurrentUser
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-black"
-                }`}
-                style={{
-                  borderBottomRightRadius: isCurrentUser ? "4px" : undefined,
-                  borderBottomLeftRadius: !isCurrentUser ? "4px" : undefined,
-                }}
-              >
-                <p className="break-words mb-1">{message.text}</p>
-                <div className="text-xs italic mt-1 opacity-70">
-                  {message.text}
+          return (
+            <React.Fragment key={message.id}>
+              {showDateSeparator && (
+                <div className="my-3 flex items-center justify-center gap-3">
+                  <div className="flex items-center justify-center">
+                    <div className="bg-primary/30 h-[1px]"></div>
+                    <span className="text-xs font-light text-neutral-500 dark:text-neutral-200">
+                      {lastDate}, {formatTime(message.date)}
+                    </span>
+                  </div>
                 </div>
+              )}
+              <div
+                className={`relative flex text-sm ${
+                  isCurrentUser ? "justify-end" : "justify-start"
+                }`}
+              >
                 <div
-                  className={`absolute bottom-0 w-4 h-4 ${
-                    isCurrentUser ? "right-0 bg-blue-500" : "left-0 bg-gray-200"
+                  className={`relative max-w-[70%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 ${
+                    isCurrentUser
+                      ? "bg-blue-500 text-white"
+                      : "bg-[#f2f2f2] text-black"
                   }`}
-                  style={{
-                    borderRadius: isCurrentUser ? "0 0 4px 0" : "0 0 0 4px",
-                    boxShadow: isCurrentUser
-                      ? "-2px -2px 0 0 #3b82f6"
-                      : "2px -2px 0 0 #e5e7eb",
-                  }}
-                />
+                >
+                  <p className="break-word-mt text-start mb-1">
+                    {message.text}
+                  </p>
+                  <div
+                    className={`relative items-center rounded-md p-0.5 px-2${
+                      isCurrentUser
+                        ? "right-0 bg-blue-400"
+                        : "left-0 bg-[#0000000d]"
+                    }`}
+                  >
+                    {" "}
+                    <div className="text-start">{message.text}</div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </React.Fragment>
-        );
-      })}
-      <div ref={scrollRef} />
+            </React.Fragment>
+          );
+        })}
+        <div ref={scrollRef} />
+      </div>
     </div>
   );
 };
