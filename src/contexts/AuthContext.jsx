@@ -12,10 +12,12 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      setLoading(false);
       console.log("Firebase Auth User:", user);
     });
 
@@ -30,6 +32,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      console.log("User signed in:", user.uid);
 
       // Check if user exists in Firestore
       const userRef = doc(db, "users", user.uid);
@@ -59,6 +62,7 @@ export const AuthContextProvider = ({ children }) => {
   const logout = async () => {
     try {
       await signOut(auth);
+      console.log("User signed out successfully");
     } catch (error) {
       console.error("Error signing out", error);
       throw error;
@@ -66,12 +70,15 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, signInWithGoogle, logout }}>
+    <AuthContext.Provider
+      value={{ currentUser, signInWithGoogle, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

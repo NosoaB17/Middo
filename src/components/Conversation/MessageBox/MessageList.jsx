@@ -1,6 +1,9 @@
+// MessageList.jsx
 import React, { useContext, useEffect, useRef } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { db } from "../../../firebase";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 
 const formatTime = (date) => {
   if (!date || typeof date.toDate !== "function") return "";
@@ -17,9 +20,39 @@ const formatDate = (date) => {
 };
 
 const MessageList = () => {
-  const { data } = useContext(ChatContext);
+  const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
   const scrollRef = useRef();
+
+  useEffect(() => {
+    if (data.chatId === "null") {
+      console.log("No chat selected");
+      return;
+    }
+
+    console.log("Fetching messages for chat:", data.chatId);
+    const q = query(
+      collection(db, "chats", data.chatId, "messages"),
+      orderBy("date", "asc")
+    );
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const messages = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log("Messages updated:", messages.length, "messages");
+        dispatch({ type: "SET_MESSAGES", payload: messages });
+      },
+      (error) => {
+        console.error("Error fetching messages:", error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [data.chatId, dispatch]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,12 +64,6 @@ const MessageList = () => {
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
     return timeDiff >= 3600000; // 1 hour in milliseconds
   };
-
-  if (!data || !Array.isArray(data.messages)) {
-    return (
-      <div className="flex justify-center items-center h-full">No messages</div>
-    );
-  }
 
   let lastDate = null;
   let lastTimestamp = null;
@@ -96,15 +123,19 @@ const MessageList = () => {
                   <p className="break-word-mt text-start mb-1">
                     {message.text}
                   </p>
-                  <div
-                    className={`relative items-center rounded-md p-0.5 px-2 ${
-                      isCurrentUser
-                        ? "right-0 bg-blue-400"
-                        : "left-0 bg-[#0000000d]"
-                    }`}
-                  >
-                    <div className="text-start">{message.text}</div>
-                  </div>
+                  {message.detectedLanguage && (
+                    <div
+                      className={`relative items-center rounded-md p-0.5 px-2 ${
+                        isCurrentUser
+                          ? "right-0 bg-blue-400"
+                          : "left-0 bg-[#0000000d]"
+                      }`}
+                    >
+                      <div className="text-start">
+                        {message.detectedLanguage}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </React.Fragment>

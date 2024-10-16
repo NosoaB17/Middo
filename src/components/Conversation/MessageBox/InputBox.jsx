@@ -1,10 +1,17 @@
+// InputBox.jsx
 import React, { useState, useContext, useRef, useEffect } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../../firebase";
 import {
-  Globe,
+  Earth,
   Paperclip,
   Smile,
   Mic,
@@ -14,7 +21,6 @@ import {
 } from "lucide-react";
 import { translateText } from "../../../services/translationService";
 import debounce from "lodash/debounce";
-import { Earth } from "lucide-react";
 
 const InputBox = () => {
   const [message, setMessage] = useState("");
@@ -63,10 +69,23 @@ const InputBox = () => {
       };
 
       try {
+        // Add message to chat
         await addDoc(
           collection(db, "chats", data.chatId, "messages"),
           messageData
         );
+
+        // Update last message in userChats for both users
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
+          [`${data.chatId}.lastMessage`]: { text: message },
+          [`${data.chatId}.date`]: serverTimestamp(),
+        });
+
+        await updateDoc(doc(db, "userChats", data.user.uid), {
+          [`${data.chatId}.lastMessage`]: { text: message },
+          [`${data.chatId}.date`]: serverTimestamp(),
+        });
+
         setMessage("");
       } catch (error) {
         console.error("Error sending message: ", error);

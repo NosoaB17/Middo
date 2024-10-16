@@ -7,12 +7,7 @@ const ConversationList = () => {
   const handleSelect = (conversation) => {
     dispatch({
       type: "CHANGE_USER",
-      payload: {
-        uid: conversation.userInfo.uid,
-        displayName: conversation.userInfo.displayName,
-        photoURL: conversation.userInfo.photoURL,
-        chatId: conversation.id,
-      },
+      payload: conversation.userInfo,
     });
   };
 
@@ -26,15 +21,15 @@ const ConversationList = () => {
           }`}
           onClick={() => handleSelect(conv)}
         >
-          <img
-            src={conv.userInfo.photoURL}
-            alt={conv.userInfo.displayName}
-            className="w-10 h-10 rounded-full mr-3"
-          />
+          <div className="w-10 h-10 rounded-full mr-3 bg-gray-300 flex items-center justify-center">
+            {conv.userInfo.uid.slice(0, 2).toUpperCase()}
+          </div>
           <div>
-            <h3 className="font-semibold">{conv.userInfo.displayName}</h3>
+            <h3 className="font-semibold">
+              User {conv.userInfo.uid.slice(0, 5)}
+            </h3>
             <p className="text-sm text-gray-500 truncate">
-              {conv.lastMessage?.text}
+              {conv.lastMessage?.text || "No messages yet"}
             </p>
           </div>
         </div>

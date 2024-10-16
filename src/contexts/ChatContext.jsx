@@ -1,12 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import {
-  onSnapshot,
-  doc,
-  collection,
-  query,
-  orderBy,
-} from "firebase/firestore";
+import { onSnapshot, doc } from "firebase/firestore";
 import { db } from "../firebase";
 
 export const ChatContext = createContext();
@@ -18,7 +12,7 @@ export const ChatContextProvider = ({ children }) => {
     user: {},
     conversations: [],
     messages: [],
-    searchResults: [], // Thêm trường này để lưu kết quả tìm kiếm
+    searchResults: [],
   };
 
   const chatReducer = (state, action) => {
@@ -65,10 +59,19 @@ export const ChatContextProvider = ({ children }) => {
         doc(db, "userChats", currentUser.uid),
         (doc) => {
           if (doc.exists()) {
-            const conversations = Object.entries(doc.data()).map(
+            const conversationsData = doc.data();
+            const conversations = Object.entries(conversationsData).map(
               ([id, data]) => ({
                 id,
                 ...data,
+                userInfo: {
+                  uid:
+                    id.split(currentUser.uid)[0] ||
+                    id.split(currentUser.uid)[1],
+                  // Chúng ta không có displayName và photoURL trong dữ liệu này
+                },
+                lastMessage: data.lastMessage,
+                date: data.date,
               })
             );
             dispatch({ type: "SET_CONVERSATIONS", payload: conversations });
@@ -80,27 +83,18 @@ export const ChatContextProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    if (state.chatId !== "null") {
-      const q = query(
-        collection(db, "chats", state.chatId, "messages"),
-        orderBy("date", "asc")
-      );
-      const unsubMessages = onSnapshot(q, (snapshot) => {
-        const messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        dispatch({ type: "SET_MESSAGES", payload: messages });
-      });
-
-      return () => unsubMessages();
-    }
-  }, [state.chatId]);
-
   return (
     <ChatContext.Provider value={{ data: state, dispatch }}>
       {children}
     </ChatContext.Provider>
   );
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const useChat = () => {
+  const context = useContext(ChatContext);
+  if (context === undefined) {
+    throw new Error("useChat must be used within a ChatContextProvider");
+  }
+  return context;
 };

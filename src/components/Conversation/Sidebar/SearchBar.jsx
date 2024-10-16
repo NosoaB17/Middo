@@ -1,3 +1,4 @@
+// SearchBar.jsx
 import { useState, useContext } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -6,6 +7,7 @@ import { db } from "../../../firebase";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const { dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
 
@@ -26,16 +28,25 @@ const SearchBar = () => {
           uid: doc.id,
           ...doc.data(),
         }))
-        .filter((user) => user.uid !== currentUser.uid); // Exclude current user from results
+        .filter((user) => user.uid !== currentUser.uid);
 
+      setSearchResults(users);
       dispatch({ type: "SET_SEARCH_RESULTS", payload: users });
+      console.log("Search results:", users);
     } catch (error) {
       console.error("Error searching users:", error);
     }
   };
+
+  const handleSelect = (user) => {
+    dispatch({ type: "CHANGE_USER", payload: user });
+    setSearchTerm("");
+    setSearchResults([]);
+  };
+
   return (
-    <>
-      <form onSubmit={handleSearch} className="w-full">
+    <div className="w-full">
+      <form onSubmit={handleSearch} className="mb-2">
         <div className="relative w-full overflow-hidden rounded-xl border bg-background transition-all">
           <div className="flex h-11 pl-1 transition-all">
             <input
@@ -48,7 +59,7 @@ const SearchBar = () => {
             <div className="flex h-11 w-11 items-center bg-inherit ">
               <button
                 type="submit"
-                className="flex aspect-square h-full items-center justify-center p-2 text-primary disabled:text-text "
+                className="flex aspect-square h-full items-center justify-center p-2 text-primary disabled:text-text"
                 disabled={!searchTerm.trim()}
               >
                 <span className="material-symbols-outlined">search</span>
@@ -57,13 +68,27 @@ const SearchBar = () => {
           </div>
         </div>
       </form>
-      <button
-        type="button"
-        className="inline-flex items-center justify-center focus:outline-nonetransition-all  font-medium bg-neutral-50 text-neutral-700 md:hover:bg-neutral-100 active:!bg-neutral-200   rounded-full p-0 shrink-0 md:w-9 md:h-9 w-11 h-11"
-      >
-        <span className="material-symbols-outlined">filter_list</span>
-      </button>
-    </>
+      {searchResults.length > 0 && (
+        <div className="absolute z-10 w-full bg-white border rounded-md shadow-lg">
+          {searchResults.map((user) => (
+            <div
+              key={user.uid}
+              className="p-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleSelect(user)}
+            >
+              <div className="flex items-center">
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                <span>{user.displayName}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
