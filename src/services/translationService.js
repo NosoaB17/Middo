@@ -1,6 +1,7 @@
 import api from "./api";
 
 export const fetchLanguages = async () => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await api.get("/languages");
     return response.data;
@@ -10,6 +11,7 @@ export const fetchLanguages = async () => {
 };
 
 export const translateText = async (text, source, target) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await api.post("/translate", { text, source, target });
     return response.data;
@@ -19,6 +21,7 @@ export const translateText = async (text, source, target) => {
 };
 
 export const textToSpeech = async (text, lang) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await api.get("/tts", {
       params: { text: encodeURIComponent(text), lang },

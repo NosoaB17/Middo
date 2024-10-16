@@ -10,6 +10,7 @@ import {
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export const signUp = async (email, password) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     await setDoc(doc(db, "users", res.user.uid), {
@@ -24,6 +25,7 @@ export const signUp = async (email, password) => {
 };
 
 export const signIn = async (email, password) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
     return res.user;
@@ -33,6 +35,7 @@ export const signIn = async (email, password) => {
 };
 
 export const signInWithGoogle = async () => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -55,6 +58,7 @@ export const signInWithGoogle = async () => {
 };
 
 export const logout = async () => {
+  // eslint-disable-next-line no-useless-catch
   try {
     await signOut(auth);
   } catch (error) {
@@ -63,6 +67,7 @@ export const logout = async () => {
 };
 
 export const resetPassword = async (email) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {

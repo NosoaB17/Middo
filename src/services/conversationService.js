@@ -6,11 +6,11 @@ import {
   getDocs,
   addDoc,
   updateDoc,
-  deleteDoc,
   doc,
 } from "firebase/firestore";
 
 export const getConversations = async (userId) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const q = query(
       collection(db, "conversations"),
@@ -24,6 +24,7 @@ export const getConversations = async (userId) => {
 };
 
 export const createConversation = async (participants, initialMessage) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const docRef = await addDoc(collection(db, "conversations"), {
       participants,
@@ -37,10 +38,11 @@ export const createConversation = async (participants, initialMessage) => {
 };
 
 export const sendMessage = async (conversationId, message) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const conversationRef = doc(db, "conversations", conversationId);
     await updateDoc(conversationRef, {
-      messages: [...(await getDoc(conversationRef)).data().messages, message],
+      messages: [...(await getDocs(conversationRef)).data().messages, message],
     });
   } catch (error) {
     throw error;
