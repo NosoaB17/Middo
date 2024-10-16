@@ -29,7 +29,7 @@ const Header = () => {
   const { data } = useContext(ChatContext);
 
   return (
-    <div className="flex w-full items-center border-b px-1 pt-2.5 pb-1 md:px-3">
+    <div className="flex w-full items-center border-b px-1 pt-2.5 pb-0.5 md:px-3">
       <div className="flex flex-1 items-center gap-2">
         <div className="flex items-center gap-2 active:opacity-30 md:cursor-pointer">
           <div className="relative">

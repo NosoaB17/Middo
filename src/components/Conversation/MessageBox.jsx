@@ -14,8 +14,13 @@ const MessageBox = () => {
         <>
           <Header />
           <div className="relative flex flex-1 flex-col overflow-hidden">
-            <MessageList />
-            <InputBox />
+            <div className="relative flex h-full w-full flex-1 overflow-hidden">
+              {" "}
+              <MessageList />
+            </div>
+            <div className="relative w-full border-t p-2">
+              <InputBox />
+            </div>
           </div>
         </>
       ) : (
