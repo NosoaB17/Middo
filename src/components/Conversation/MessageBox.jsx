@@ -9,7 +9,7 @@ const MessageBox = () => {
   const { data } = useContext(ChatContext);
 
   return (
-    <div className="flex h-full flex-1 flex-col overflow-hidden rounded-lg bg-card md:rounded-none">
+    <div className="flex h-full flex-1 flex-col overflow-hidden rounded-lg bg-card md:rounded-none mt-5">
       {data.chatId !== "null" ? (
         <>
           <Header />

@@ -6,12 +6,8 @@ const createHashtagFromDisplayName = (displayName) => {
   if (!displayName) return "";
 
   const vietnameseToEnglishMap = {
-    á: "a",
-    à: "a",
     ả: "a",
-    ã: "a",
-    ạ: "a",
-    // ... (giữ nguyên phần còn lại của map)
+    ơ: "o",
   };
 
   const replaceVietnameseCharacters = (str) => {

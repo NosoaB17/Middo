@@ -117,7 +117,7 @@ const MessageList = () => {
                 }`}
               >
                 <p className="break-word-mt text-start mb-1">{message.text}</p>
-                {message.detectedLanguage && (
+                {message.text && (
                   <div
                     className={`relative items-center rounded-md p-0.5 px-2 ${
                       isCurrentUser
@@ -125,7 +125,7 @@ const MessageList = () => {
                         : "left-0 bg-[#0000000d]"
                     }`}
                   >
-                    <div className="text-start">{message.detectedLanguage}</div>
+                    <div className="text-start">{message.text}</div>
                   </div>
                 )}
               </div>
