@@ -37,11 +37,17 @@ const Header = () => {
               className="border-1 relative aspect-square shrink-0 overflow-hidden rounded-full border border-neutral-50 dark:border-neutral-800"
               style={{ width: "36px", height: "36px" }}
             >
-              <img
-                alt={data.user?.displayName}
-                src={data.user?.photoURL}
-                className="object-cover absolute inset-0 h-full w-full"
-              />
+              {data.user?.photoURL ? (
+                <img
+                  alt={data.user?.displayName}
+                  src={data.user?.photoURL}
+                  className="object-cover absolute inset-0 h-full w-full"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full w-full bg-gray-300 text-gray-600">
+                  {data.user?.displayName?.charAt(0).toUpperCase() || "?"}
+                </div>
+              )}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 z-50 h-3.5 w-3.5 rounded-full bg-white p-[2px] dark:bg-neutral-950">
               <div className="h-full w-full rounded-full bg-[#51c878]"></div>
@@ -49,7 +55,7 @@ const Header = () => {
           </div>
           <div>
             <p className="break-word-mt line-clamp-1 font-medium">
-              {data.user?.displayName}
+              {data.user?.displayName || "Unknown User"}
             </p>
             <p className="line-clamp-1 text-sm font-light">
               @{createHashtagFromDisplayName(data.user?.displayName)}

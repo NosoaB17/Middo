@@ -21,12 +21,22 @@ const ConversationList = () => {
           }`}
           onClick={() => handleSelect(conv)}
         >
-          <div className="w-10 h-10 rounded-full mr-3 bg-gray-300 flex items-center justify-center">
-            {conv.userInfo.uid.slice(0, 2).toUpperCase()}
+          <div className="w-10 h-10 rounded-full mr-3 overflow-hidden">
+            {conv.userInfo.photoURL ? (
+              <img
+                src={conv.userInfo.photoURL}
+                alt={conv.userInfo.displayName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">
+                {conv.userInfo.displayName?.charAt(0).toUpperCase() || "?"}
+              </div>
+            )}
           </div>
           <div>
             <h3 className="font-semibold">
-              User {conv.userInfo.uid.slice(0, 5)}
+              {conv.userInfo.displayName || "Unknown User"}
             </h3>
             <p className="text-sm text-gray-500 truncate">
               {conv.lastMessage?.text || "No messages yet"}

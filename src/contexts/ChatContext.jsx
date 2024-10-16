@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 export const ChatContext = createContext();
@@ -54,34 +54,48 @@ export const ChatContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
   useEffect(() => {
-    if (currentUser?.uid) {
-      const unsubUserChats = onSnapshot(
-        doc(db, "userChats", currentUser.uid),
-        (doc) => {
-          if (doc.exists()) {
-            const conversationsData = doc.data();
-            const conversations = Object.entries(conversationsData).map(
-              ([id, data]) => ({
-                id,
-                ...data,
-                userInfo: {
-                  uid:
-                    id.split(currentUser.uid)[0] ||
-                    id.split(currentUser.uid)[1],
-                  // Chúng ta không có displayName và photoURL trong dữ liệu này
-                },
-                lastMessage: data.lastMessage,
-                date: data.date,
-              })
-            );
-            dispatch({ type: "SET_CONVERSATIONS", payload: conversations });
+    const getConversations = async () => {
+      if (currentUser?.uid) {
+        const unsubUserChats = onSnapshot(
+          doc(db, "userChats", currentUser.uid),
+          async (doc) => {
+            if (doc.exists()) {
+              const conversationsData = doc.data();
+              const conversations = await Promise.all(
+                Object.entries(conversationsData).map(async ([id, data]) => {
+                  const userInfo = await getUserInfo(
+                    id.replace(currentUser.uid, "")
+                  );
+                  return {
+                    id,
+                    ...data,
+                    userInfo: {
+                      uid: userInfo.uid,
+                      displayName: userInfo.displayName,
+                      photoURL: userInfo.photoURL,
+                    },
+                  };
+                })
+              );
+              dispatch({ type: "SET_CONVERSATIONS", payload: conversations });
+            }
           }
-        }
-      );
+        );
 
-      return () => unsubUserChats();
-    }
+        return () => unsubUserChats();
+      }
+    };
+
+    getConversations();
   }, [currentUser]);
+
+  const getUserInfo = async (uid) => {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (userDoc.exists()) {
+      return userDoc.data();
+    }
+    return { uid, displayName: "Unknown User", photoURL: null };
+  };
 
   return (
     <ChatContext.Provider value={{ data: state, dispatch }}>
