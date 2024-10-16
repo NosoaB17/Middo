@@ -1,5 +1,5 @@
 // InputBox.jsx
-import React, { useState, useContext, useRef, useEffect } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import {
@@ -25,10 +25,11 @@ import debounce from "lodash/debounce";
 const InputBox = () => {
   const [message, setMessage] = useState("");
   const [detectedLanguage, setDetectedLanguage] = useState("");
-  const { data } = useContext(ChatContext);
-  const { currentUser } = useContext(AuthContext);
+  const [translatedMessage, setTranslatedMessage] = useState("");
   const [isDetectLanguageOpen, setIsDetectLanguageOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const { data } = useContext(ChatContext);
+  const { currentUser } = useContext(AuthContext);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -44,12 +45,19 @@ const InputBox = () => {
         try {
           const response = await translateText(text, "auto", "en");
           setDetectedLanguage(response.detectedLanguage.toUpperCase());
+          if (response.detectedLanguage.toLowerCase() !== "en") {
+            setTranslatedMessage(response.translatedText);
+          } else {
+            setTranslatedMessage("");
+          }
         } catch (error) {
           console.error("Error detecting language:", error);
           setDetectedLanguage("");
+          setTranslatedMessage("");
         }
       } else {
         setDetectedLanguage("");
+        setTranslatedMessage("");
       }
     }, 300)
   ).current;
@@ -61,15 +69,22 @@ const InputBox = () => {
 
   const handleSend = async () => {
     if (message.trim() && data.chatId && data.chatId !== "null") {
-      const messageData = {
-        text: message,
-        senderId: currentUser.uid,
-        date: serverTimestamp(),
-        detectedLanguage: detectedLanguage,
-      };
-
       try {
-        // Add message to chat
+        let finalTranslatedText = translatedMessage;
+
+        // If translation hasn't happened yet, do it now
+        if (!finalTranslatedText && detectedLanguage !== "EN") {
+          const response = await translateText(message, detectedLanguage, "en");
+          finalTranslatedText = response.translatedText;
+        }
+        const messageData = {
+          text: message,
+          senderId: currentUser.uid,
+          date: serverTimestamp(),
+          detectedLanguage: detectedLanguage,
+          translatedText: translatedMessage || null,
+        };
+
         await addDoc(
           collection(db, "chats", data.chatId, "messages"),
           messageData
@@ -87,6 +102,9 @@ const InputBox = () => {
         });
 
         setMessage("");
+        setTranslatedMessage("");
+        setDetectedLanguage("");
+        console.log("translate complete");
       } catch (error) {
         console.error("Error sending message: ", error);
       }

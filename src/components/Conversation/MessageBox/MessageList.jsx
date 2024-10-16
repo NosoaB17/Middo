@@ -39,10 +39,14 @@ const MessageList = () => {
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const messages = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          console.log("Message data:", data); // Thêm log để kiểm tra dữ liệu tin nhắn
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
         console.log("Messages updated:", messages.length, "messages");
         dispatch({ type: "SET_MESSAGES", payload: messages });
       },
@@ -117,17 +121,18 @@ const MessageList = () => {
                 }`}
               >
                 <p className="break-word-mt text-start mb-1">{message.text}</p>
-                {message.text && (
-                  <div
-                    className={`relative items-center rounded-md p-0.5 px-2 ${
-                      isCurrentUser
-                        ? "right-0 bg-blue-400"
-                        : "left-0 bg-[#0000000d]"
-                    }`}
-                  >
-                    <div className="text-start">{message.text}</div>
-                  </div>
-                )}
+                {message.translatedText &&
+                  message.translatedText !== message.text && (
+                    <div
+                      className={`relative items-center rounded-md p-0.5 px-2 ${
+                        isCurrentUser
+                          ? "right-0 bg-blue-400"
+                          : "left-0 bg-[#0000000d]"
+                      }`}
+                    >
+                      <div className="text-start">{message.translatedText}</div>
+                    </div>
+                  )}
               </div>
             </div>
           </React.Fragment>
