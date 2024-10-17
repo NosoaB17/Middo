@@ -1,5 +1,5 @@
 // MessageList.jsx
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { db } from "../../../firebase";
@@ -22,6 +22,12 @@ const formatDate = (date) => {
 const MessageList = () => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
+
+  const [selectedMessageId, setSelectedMessageId] = useState(null);
+  const handleMessageClick = (messageId) => {
+    setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
+  };
+
   const scrollRef = useRef();
 
   useEffect(() => {
@@ -41,7 +47,7 @@ const MessageList = () => {
       (snapshot) => {
         const messages = snapshot.docs.map((doc) => {
           const data = doc.data();
-          console.log("Message data:", data); // Thêm log để kiểm tra dữ liệu tin nhắn
+          console.log("Message data:", data);
           return {
             id: doc.id,
             ...data,
@@ -66,7 +72,7 @@ const MessageList = () => {
     if (!currentDate || !previousDate) return true;
     const timeDiff =
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
-    return timeDiff >= 3600000; // 1 hour in milliseconds
+    return timeDiff >= 3600000;
   };
 
   let lastDate = null;
@@ -87,6 +93,7 @@ const MessageList = () => {
         }
 
         const isCurrentUser = message.senderId === currentUser.uid;
+        const isSelected = message.id === selectedMessageId;
 
         return (
           <React.Fragment key={message.id}>
@@ -109,18 +116,27 @@ const MessageList = () => {
               </div>
             )}
             <div
-              className={`relative flex text-sm ${
-                isCurrentUser ? "justify-end" : "justify-start"
+              className={`relative flex flex-col text-sm ${
+                isCurrentUser ? "items-end" : "items-start"
               }`}
             >
               <div
-                className={`relative max-w-[70%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 ${
+                className={`relative max-w-[70%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
                   isCurrentUser
                     ? "bg-blue-500 text-white"
                     : "bg-[#f2f2f2] text-black"
                 }`}
+                onClick={() => handleMessageClick(message.id)}
               >
-                <p className="break-word-mt text-start mb-1">{message.text}</p>
+                {isCurrentUser ? (
+                  <p className="break-word-mt text-start mb-1">
+                    {message.text}
+                  </p>
+                ) : (
+                  <p className="break-word-mt text-start mb-1">
+                    {message.translatedText}
+                  </p>
+                )}
                 {message.translatedText &&
                   message.translatedText !== message.text && (
                     <div
@@ -134,6 +150,16 @@ const MessageList = () => {
                     </div>
                   )}
               </div>
+              {isSelected && (
+                <span
+                  className={`text-xs mt-1 ${
+                    isCurrentUser ? "text-right" : "text-left"
+                  }`}
+                >
+                  Translated from {message.detectedLanguage} •{" "}
+                  {formatTime(message.date)}
+                </span>
+              )}
             </div>
           </React.Fragment>
         );
