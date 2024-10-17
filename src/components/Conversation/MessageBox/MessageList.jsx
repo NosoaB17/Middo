@@ -5,6 +5,8 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { db } from "../../../firebase";
 import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 
+import { SmilePlus, EllipsisVertical } from "lucide-react";
+
 const formatTime = (date) => {
   if (!date || typeof date.toDate !== "function") return "";
   return date
@@ -26,6 +28,15 @@ const MessageList = () => {
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const handleMessageClick = (messageId) => {
     setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
+  };
+  const [hoveredMessageId, setHoveredMessageId] = useState(null);
+
+  const handleSelectIcon = (messageId) => {
+    console.log("Select icon for message:", messageId);
+  };
+
+  const handleMessageMenu = (messageId) => {
+    console.log("Show menu for message:", messageId);
   };
 
   const scrollRef = useRef();
@@ -94,6 +105,7 @@ const MessageList = () => {
 
         const isCurrentUser = message.senderId === currentUser.uid;
         const isSelected = message.id === selectedMessageId;
+        const isHovered = hoveredMessageId === message.id;
 
         return (
           <React.Fragment key={message.id}>
@@ -119,6 +131,8 @@ const MessageList = () => {
               className={`relative flex flex-col text-sm ${
                 isCurrentUser ? "items-end" : "items-start"
               }`}
+              onMouseEnter={() => setHoveredMessageId(message.id)}
+              onMouseLeave={() => setHoveredMessageId(null)}
             >
               <div
                 className={`relative max-w-[70%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
@@ -128,15 +142,9 @@ const MessageList = () => {
                 }`}
                 onClick={() => handleMessageClick(message.id)}
               >
-                {isCurrentUser ? (
-                  <p className="break-word-mt text-start mb-1">
-                    {message.text}
-                  </p>
-                ) : (
-                  <p className="break-word-mt text-start mb-1">
-                    {message.translatedText}
-                  </p>
-                )}
+                <p className="break-word-mt text-start mb-1">
+                  {isCurrentUser ? message.text : message.translatedText}
+                </p>
                 {message.translatedText &&
                   message.translatedText !== message.text && (
                     <div
@@ -150,6 +158,26 @@ const MessageList = () => {
                     </div>
                   )}
               </div>
+              {isHovered && (
+                <div
+                  className={`absolute ${
+                    isCurrentUser ? "left-0" : "right-0"
+                  } top-0 flex space-x-2`}
+                >
+                  <button
+                    className="p-1 bg-none rounded-full shadow-md hover:bg-gray-100"
+                    onClick={() => handleSelectIcon(message.id)}
+                  >
+                    <SmilePlus size={16} />
+                  </button>
+                  <button
+                    className="p-1 bg-none rounded-full shadow-md hover:bg-gray-100"
+                    onClick={() => handleMessageMenu(message.id)}
+                  >
+                    <EllipsisVertical size={16} />
+                  </button>
+                </div>
+              )}
               {isSelected && (
                 <span
                   className={`text-xs mt-1 ${
