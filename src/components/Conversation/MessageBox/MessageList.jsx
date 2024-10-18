@@ -3,9 +3,17 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { db } from "../../../firebase";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
-
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { SmilePlus, EllipsisVertical } from "lucide-react";
+import MessageMenu from "./MessageMenu";
 
 const formatTime = (date) => {
   if (!date || typeof date.toDate !== "function") return "";
@@ -26,20 +34,28 @@ const MessageList = () => {
   const { currentUser } = useContext(AuthContext);
 
   const [selectedMessageId, setSelectedMessageId] = useState(null);
+  const [hoveredMessageId, setHoveredMessageId] = useState(null);
+  const scrollRef = useRef();
+
   const handleMessageClick = (messageId) => {
     setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
   };
-  const [hoveredMessageId, setHoveredMessageId] = useState(null);
 
   const handleSelectIcon = (messageId) => {
     console.log("Select icon for message:", messageId);
   };
 
-  const handleMessageMenu = (messageId) => {
-    console.log("Show menu for message:", messageId);
+  const handleRemoveMessage = async (messageId) => {
+    try {
+      const messageRef = doc(db, "chats", data.chatId, "messages", messageId);
+      await updateDoc(messageRef, {
+        isRemoved: true,
+        removedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error removing message:", error);
+    }
   };
-
-  const scrollRef = useRef();
 
   useEffect(() => {
     if (data.chatId === "null") {
@@ -104,8 +120,9 @@ const MessageList = () => {
         }
 
         const isCurrentUser = message.senderId === currentUser.uid;
-        const isSelected = message.id === selectedMessageId;
+        const isRemoved = message.isRemoved;
         const isHovered = hoveredMessageId === message.id;
+        const isSelected = selectedMessageId === message.id;
 
         return (
           <React.Fragment key={message.id}>
@@ -113,7 +130,7 @@ const MessageList = () => {
               <div className="my-3 flex items-center justify-center gap-3">
                 <div className="flex items-center justify-center">
                   <div className="bg-primary/30 h-[1px] flex-grow"></div>
-                  <span className="text-xs font-light text-neutral-500 dark:text-neutral-200 px-2">
+                  <span className="text-xs font-light text-neutral-500 px-2">
                     {lastDate}
                   </span>
                   <div className="bg-primary/30 h-[1px] flex-grow"></div>
@@ -122,7 +139,7 @@ const MessageList = () => {
             )}
             {showTimestamp && !showDateSeparator && (
               <div className="my-2 flex items-center justify-center">
-                <span className="text-xs font-light text-neutral-500 dark:text-neutral-200">
+                <span className="text-xs font-light text-neutral-500 ">
                   {formatTime(message.date)}
                 </span>
               </div>
@@ -134,49 +151,60 @@ const MessageList = () => {
               onMouseEnter={() => setHoveredMessageId(message.id)}
               onMouseLeave={() => setHoveredMessageId(null)}
             >
-              <div
-                className={`relative max-w-[70%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
-                  isCurrentUser
-                    ? "bg-blue-500 text-white"
-                    : "bg-[#f2f2f2] text-black"
-                }`}
-                onClick={() => handleMessageClick(message.id)}
-              >
-                <p className="break-word-mt text-start mb-1">
-                  {isCurrentUser ? message.text : message.translatedText}
-                </p>
-                {message.translatedText &&
-                  message.translatedText !== message.text && (
+              {isRemoved ? (
+                <div className="px-3 py-2 md:py-1 bg-primary !bg-transparent me">
+                  <div className="break-word-mt text-start text-base md:text-sm text-neutral-400">
+                    removed a message
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div
+                    className={`relative max-w-[50%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
+                      isCurrentUser
+                        ? "bg-blue-500 text-white"
+                        : "bg-[#f2f2f2] text-black"
+                    }`}
+                    onClick={() => handleMessageClick(message.id)}
+                  >
+                    <p className="break-word-mt text-start mb-1">
+                      {isCurrentUser ? message.text : message.translatedText}
+                    </p>
+                    {message.translatedText &&
+                      message.translatedText !== message.text && (
+                        <div
+                          className={`relative items-center rounded-md p-0.5 px-2 ${
+                            isCurrentUser
+                              ? "right-0 bg-blue-400"
+                              : "left-0 bg-[#e6e6e6]"
+                          }`}
+                        >
+                          <div className="text-start">
+                            {message.translatedText}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+                  {isHovered && (
                     <div
-                      className={`relative items-center rounded-md p-0.5 px-2 ${
-                        isCurrentUser
-                          ? "right-0 bg-blue-400"
-                          : "left-0 bg-[#0000000d]"
+                      className={`absolute flex row items-start gap-2 ${
+                        isCurrentUser ? "right-0 mr-[50%]" : "left-0 ml-[50%]"
                       }`}
                     >
-                      <div className="text-start">{message.translatedText}</div>
+                      <div
+                        className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
+                        onClick={() => handleSelectIcon(message.id)}
+                      >
+                        <SmilePlus size={18} />
+                      </div>
+                      <MessageMenu
+                        messageId={message.id}
+                        onRemove={handleRemoveMessage}
+                        position={isCurrentUser ? "left" : "right"}
+                      />
                     </div>
                   )}
-              </div>
-              {isHovered && (
-                <div
-                  className={`absolute ${
-                    isCurrentUser ? "left-0" : "right-0"
-                  } top-0 flex space-x-2`}
-                >
-                  <button
-                    className="p-1 bg-none rounded-full shadow-md hover:bg-gray-100"
-                    onClick={() => handleSelectIcon(message.id)}
-                  >
-                    <SmilePlus size={16} />
-                  </button>
-                  <button
-                    className="p-1 bg-none rounded-full shadow-md hover:bg-gray-100"
-                    onClick={() => handleMessageMenu(message.id)}
-                  >
-                    <EllipsisVertical size={16} />
-                  </button>
-                </div>
+                </>
               )}
               {isSelected && (
                 <span

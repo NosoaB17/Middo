@@ -16,7 +16,6 @@ import {
   Mic,
   Send,
   ChevronUp,
-  ChevronDown,
   Edit2,
 } from "lucide-react";
 import { translateText } from "../../../services/translationService";
@@ -31,18 +30,20 @@ const ESLTranslationTool = ({
 }) => {
   return (
     <div
-      className={`bg-white border rounded-lg p-2 mb-2 ${
+      className={`bg-[#f8fafc] rounded-xl gap-3 p-3 mb-2 ${
         isOpen ? "" : "hidden"
       }`}
     >
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex items-center">
+      <div className="flex justify-between items-center p-1 mb-2">
+        <div className="flex items-center ">
           <img
             src="https://hatscripts.github.io/circle-flags/flags/gb.svg"
             alt="UK Flag"
             className="w-5 h-5 mr-2"
           />
-          <span className="font-semibold">E.S.L Translation Tool</span>
+          <span className="font-semibold text-[#666]">
+            E.S.L Translation Tool
+          </span>
         </div>
         <label className="relative inline-flex items-center cursor-pointer">
           <input
@@ -51,7 +52,7 @@ const ESLTranslationTool = ({
             onChange={onToggle}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer  after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
         </label>
       </div>
 
@@ -187,25 +188,26 @@ const InputBox = () => {
       />
       <div
         className={`flex min-h-[82px] w-full flex-col rounded-2xl border p-1 shadow-sm overflow-hidden transition-all duration-300 ${
-          isFocused
-            ? "border-[#3d88ed] ring-2 ring-[#3d88ed]/50"
-            : "border-primary"
+          isFocused ? "border-[#3d88ed]" : "border-primary"
         }`}
       >
         <div className="flex items-center">
-          <div className="mr-2 flex-1">
-            <button
-              onClick={() => setIsDetectLanguageOpen(!isDetectLanguageOpen)}
-              className="flex h-10 w-full items-center justify-between rounded-xl bg-[#f2f2f2] px-3 hover:bg-neutral-100 transition-colors duration-200"
-            >
-              <div className="flex items-center">
+          <div className="mr-3 flex-1">
+            <div className="w-full">
+              {" "}
+              <button
+                onClick={() => setIsDetectLanguageOpen(!isDetectLanguageOpen)}
+                className="flex h-11 w-full items-center rounded-xl bg-neutral-50 px-3 hover:bg-neutral-100 @md:w-[240px] md:h-10"
+              >
                 <Earth className="text-blue-500 mr-2 inline-block size-5" />
                 <span className="flex-1 text-left">
-                  {detectedLanguage || "Detect language"}
+                  {detectedLanguage
+                    ? `Detected :${detectedLanguage}`
+                    : "Detect language"}
                 </span>
-              </div>
-              {isDetectLanguageOpen ? <ChevronUp /> : <ChevronDown />}
-            </button>
+                <ChevronUp />
+              </button>
+            </div>
           </div>
           <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
             <Paperclip className="w-5 h-5" />
