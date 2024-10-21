@@ -1,4 +1,3 @@
-// MessageList.jsx
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -12,22 +11,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { SmilePlus } from "lucide-react";
-import MessageMenu from "./MessageMenu";
-
-const formatTime = (date) => {
-  if (!date || typeof date.toDate !== "function") return "";
-  return date
-    .toDate()
-    .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-};
-
-const formatDate = (date) => {
-  if (!date || typeof date.toDate !== "function") return "";
-  return date
-    .toDate()
-    .toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" });
-};
+import MessageItem from "./MessageItem";
 
 const MessageList = () => {
   const { data, dispatch } = useContext(ChatContext);
@@ -36,26 +20,6 @@ const MessageList = () => {
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const scrollRef = useRef();
-
-  const handleMessageClick = (messageId) => {
-    setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
-  };
-
-  const handleSelectIcon = (messageId) => {
-    console.log("Select icon for message:", messageId);
-  };
-
-  const handleRemoveMessage = async (messageId) => {
-    try {
-      const messageRef = doc(db, "chats", data.chatId, "messages", messageId);
-      await updateDoc(messageRef, {
-        isRemoved: true,
-        removedAt: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error("Error removing message:", error);
-    }
-  };
 
   useEffect(() => {
     if (data.chatId === "null") {
@@ -95,11 +59,47 @@ const MessageList = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data.messages]);
 
+  const formatTime = (date) => {
+    if (!date || typeof date.toDate !== "function") return "";
+    return date
+      .toDate()
+      .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const formatDate = (date) => {
+    if (!date || typeof date.toDate !== "function") return "";
+    return date.toDate().toLocaleDateString([], {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   const shouldShowTimestamp = (currentDate, previousDate) => {
     if (!currentDate || !previousDate) return true;
     const timeDiff =
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
-    return timeDiff >= 3600000;
+    return timeDiff >= 3600000; // 1 hour in milliseconds
+  };
+
+  const handleMessageClick = (messageId) => {
+    setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
+  };
+
+  const handleSelectIcon = (messageId) => {
+    console.log("Select icon for message:", messageId);
+  };
+
+  const handleRemoveMessage = async (messageId) => {
+    try {
+      const messageRef = doc(db, "chats", data.chatId, "messages", messageId);
+      await updateDoc(messageRef, {
+        isRemoved: true,
+        removedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error removing message:", error);
+    }
   };
 
   let lastDate = null;
@@ -145,77 +145,20 @@ const MessageList = () => {
               </div>
             )}
             <div
-              className={`relative flex flex-col text-sm ${
-                isCurrentUser ? "items-end" : "items-start"
-              }`}
               onMouseEnter={() => setHoveredMessageId(message.id)}
               onMouseLeave={() => setHoveredMessageId(null)}
             >
-              {isRemoved ? (
-                <div className="px-3 py-2 md:py-1 bg-primary !bg-transparent me">
-                  <div className="break-word-mt text-start text-base md:text-sm text-neutral-400">
-                    removed a message
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div
-                    className={`relative max-w-[50%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
-                      isCurrentUser
-                        ? "bg-blue-500 text-white"
-                        : "bg-[#f2f2f2] text-black"
-                    }`}
-                    onClick={() => handleMessageClick(message.id)}
-                  >
-                    <p className="break-word-mt text-start mb-1">
-                      {isCurrentUser ? message.text : message.translatedText}
-                    </p>
-                    {message.translatedText &&
-                      message.translatedText !== message.text && (
-                        <div
-                          className={`relative items-center rounded-md p-0.5 px-2 ${
-                            isCurrentUser
-                              ? "right-0 bg-blue-400"
-                              : "left-0 bg-[#e6e6e6]"
-                          }`}
-                        >
-                          <div className="text-start">
-                            {message.translatedText}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                  {isHovered && (
-                    <div
-                      className={`absolute flex row items-start gap-2 ${
-                        isCurrentUser ? "right-0 mr-[50%]" : "left-0 ml-[50%]"
-                      }`}
-                    >
-                      <div
-                        className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
-                        onClick={() => handleSelectIcon(message.id)}
-                      >
-                        <SmilePlus size={18} />
-                      </div>
-                      <MessageMenu
-                        messageId={message.id}
-                        onRemove={handleRemoveMessage}
-                        position={isCurrentUser ? "left" : "right"}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-              {isSelected && (
-                <span
-                  className={`text-xs mt-1 ${
-                    isCurrentUser ? "text-right" : "text-left"
-                  }`}
-                >
-                  Translated from {message.detectedLanguage} •{" "}
-                  {formatTime(message.date)}
-                </span>
-              )}
+              <MessageItem
+                message={message}
+                isCurrentUser={isCurrentUser}
+                isRemoved={isRemoved}
+                isHovered={isHovered}
+                isSelected={isSelected}
+                onMessageClick={handleMessageClick}
+                onSelectIcon={handleSelectIcon}
+                onRemove={handleRemoveMessage}
+                formatTime={formatTime}
+              />
             </div>
           </React.Fragment>
         );
