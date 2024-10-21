@@ -1,9 +1,8 @@
-// MessageBox.jsx
 import { useContext } from "react";
+import { ChatContext } from "../../contexts/ChatContext";
 import Header from "./MessageBox/Header";
 import MessageList from "./MessageBox/MessageList";
 import InputBox from "./MessageBox/InputBox";
-import { ChatContext } from "../../contexts/ChatContext";
 
 const MessageBox = () => {
   const { data } = useContext(ChatContext);

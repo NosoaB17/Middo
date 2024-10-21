@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import {
+  Eye,
   Copy,
   MessageSquare,
   Forward,
   Pin,
   Trash,
-  EllipsisVertical,
+  MoreVertical,
 } from "lucide-react";
 
 const MessageMenu = ({ messageId, onRemove, position }) => {
@@ -37,7 +38,7 @@ const MessageMenu = ({ messageId, onRemove, position }) => {
         className="p-1 rounded-full shadow-md hover:bg-gray-100 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <EllipsisVertical size={18} />
+        <MoreVertical size={18} />
       </div>
       {isOpen && (
         <div
@@ -46,8 +47,10 @@ const MessageMenu = ({ messageId, onRemove, position }) => {
             position === "left" ? "left-0" : "right-0"
           }`}
         >
+          <MenuItem icon={<Eye size={16} />} text="View original" />
           <MenuItem icon={<Copy size={16} />} text="Copy" />
           <MenuItem icon={<Copy size={16} />} text="Copy E.S.L" />
+          <MenuItem icon={<Copy size={16} />} text="Copy original" />
           <MenuItem
             icon={<MessageSquare size={16} />}
             text="Reply in Discussion"
@@ -58,6 +61,7 @@ const MessageMenu = ({ messageId, onRemove, position }) => {
             icon={<Trash size={16} />}
             text="Remove"
             onClick={handleRemove}
+            className="text-red-500"
           />
         </div>
       )}
@@ -65,9 +69,9 @@ const MessageMenu = ({ messageId, onRemove, position }) => {
   );
 };
 
-const MenuItem = ({ icon, text, onClick }) => (
+const MenuItem = ({ icon, text, onClick, className = "" }) => (
   <div
-    className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+    className={`flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer ${className}`}
     onClick={onClick}
   >
     {icon}

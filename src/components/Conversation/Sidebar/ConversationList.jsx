@@ -1,8 +1,14 @@
-import { useContext } from "react";
+// ConversationList.jsx
+import { useContext, useMemo } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 
 const ConversationList = () => {
   const { data, dispatch } = useContext(ChatContext);
+
+  // Sử dụng useMemo để tối ưu hiệu suất khi sắp xếp và định dạng danh sách đoạn hội thoại
+  const sortedConversations = useMemo(() => {
+    return [...data.conversations].sort((a, b) => b.date - a.date);
+  }, [data.conversations]);
 
   const handleSelect = (conversation) => {
     dispatch({
@@ -16,17 +22,14 @@ const ConversationList = () => {
     if (!timestamp) return "";
     const date = timestamp.toDate();
     const now = new Date();
-    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+    const diffMs = now - date;
+    const diffHours = diffMs / (1000 * 60 * 60);
 
-    if (diffDays === 0) {
+    if (diffHours < 24) {
       return date.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       });
-    } else if (diffDays === 1) {
-      return "Yesterday";
-    } else if (diffDays < 7) {
-      return date.toLocaleDateString([], { weekday: "short" });
     } else {
       return date.toLocaleDateString([], { month: "short", day: "numeric" });
     }
@@ -34,7 +37,7 @@ const ConversationList = () => {
 
   return (
     <div className="h-full overflow-y-auto">
-      {data.conversations.map((conv) => (
+      {sortedConversations.map((conv) => (
         <div
           key={conv.id}
           className={`relative flex cursor-pointer items-center px-3 py-2 transition-all hover:bg-neutral-100 ${

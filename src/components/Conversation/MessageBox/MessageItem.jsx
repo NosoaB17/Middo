@@ -48,21 +48,39 @@ const MessageItem = ({
         </div>
         {isHovered && (
           <div
-            className={`absolute flex row items-start gap-2 ${
+            className={`absolute flex gap-2 ${
               isCurrentUser ? "right-0 mr-[50%]" : "left-0 ml-[50%]"
             }`}
           >
-            <div
-              className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
-              onClick={() => onSelectIcon(message.id)}
-            >
-              <SmilePlus size={18} />
-            </div>
-            <MessageMenu
-              messageId={message.id}
-              onRemove={onRemove}
-              position={isCurrentUser ? "left" : "right"}
-            />
+            {isCurrentUser ? (
+              <>
+                <MessageMenu
+                  messageId={message.id}
+                  onRemove={onRemove}
+                  position="left"
+                />
+                <div
+                  className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
+                  onClick={() => onSelectIcon(message.id)}
+                >
+                  <SmilePlus size={18} />
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
+                  onClick={() => onSelectIcon(message.id)}
+                >
+                  <SmilePlus size={18} />
+                </div>
+                <MessageMenu
+                  messageId={message.id}
+                  onRemove={onRemove}
+                  position="right"
+                />
+              </>
+            )}
           </div>
         )}
       </>
