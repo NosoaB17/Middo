@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import MessageItem from "./MessageItem";
 
-const MessageList = () => {
+const MessageList = ({ onOpenDiscussion }) => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
 
@@ -36,14 +36,10 @@ const MessageList = () => {
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const messages = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          console.log("Message data:", data);
-          return {
-            id: doc.id,
-            ...data,
-          };
-        });
+        const messages = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         console.log("Messages updated:", messages.length, "messages");
         dispatch({ type: "SET_MESSAGES", payload: messages });
       },
@@ -102,6 +98,10 @@ const MessageList = () => {
     }
   };
 
+  const handleReplyInDiscussion = (messageId) => {
+    onOpenDiscussion(messageId);
+  };
+
   let lastDate = null;
   let lastTimestamp = null;
 
@@ -139,7 +139,7 @@ const MessageList = () => {
             )}
             {showTimestamp && !showDateSeparator && (
               <div className="my-2 flex items-center justify-center">
-                <span className="text-xs font-light text-neutral-500 ">
+                <span className="text-xs font-light text-neutral-500">
                   {formatTime(message.date)}
                 </span>
               </div>
@@ -157,6 +157,7 @@ const MessageList = () => {
                 onMessageClick={handleMessageClick}
                 onSelectIcon={handleSelectIcon}
                 onRemove={handleRemoveMessage}
+                onReplyInDiscussion={handleReplyInDiscussion}
                 formatTime={formatTime}
               />
             </div>

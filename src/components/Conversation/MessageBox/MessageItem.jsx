@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 
@@ -11,6 +10,7 @@ const MessageItem = ({
   onMessageClick,
   onSelectIcon,
   onRemove,
+  onReplyInDiscussion,
   formatTime,
 }) => (
   <div
@@ -57,6 +57,7 @@ const MessageItem = ({
                 <MessageMenu
                   messageId={message.id}
                   onRemove={onRemove}
+                  onReplyInDiscussion={onReplyInDiscussion}
                   position="left"
                 />
                 <div
@@ -77,6 +78,7 @@ const MessageItem = ({
                 <MessageMenu
                   messageId={message.id}
                   onRemove={onRemove}
+                  onReplyInDiscussion={onReplyInDiscussion}
                   position="right"
                 />
               </>

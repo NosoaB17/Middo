@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import {
   Eye,
@@ -10,7 +9,12 @@ import {
   MoreVertical,
 } from "lucide-react";
 
-const MessageMenu = ({ messageId, onRemove, position }) => {
+const MessageMenu = ({
+  messageId,
+  onRemove,
+  position,
+  onReplyInDiscussion,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -29,6 +33,11 @@ const MessageMenu = ({ messageId, onRemove, position }) => {
 
   const handleRemove = () => {
     onRemove(messageId);
+    setIsOpen(false);
+  };
+
+  const handleReplyInDiscussion = () => {
+    onReplyInDiscussion(messageId);
     setIsOpen(false);
   };
 
@@ -54,6 +63,7 @@ const MessageMenu = ({ messageId, onRemove, position }) => {
           <MenuItem
             icon={<MessageSquare size={16} />}
             text="Reply in Discussion"
+            onClick={handleReplyInDiscussion}
           />
           <MenuItem icon={<Forward size={16} />} text="Forward" />
           <MenuItem icon={<Pin size={16} />} text="Pin" />
