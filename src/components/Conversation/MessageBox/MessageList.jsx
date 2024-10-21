@@ -12,7 +12,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { SmilePlus, EllipsisVertical } from "lucide-react";
+import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 
 const formatTime = (date) => {
@@ -107,7 +107,7 @@ const MessageList = () => {
 
   return (
     <div className="relative bg-primary/5 flex w-full flex-1 flex-col gap-2.5 overflow-x-hidden overflow-y-scroll px-2 md:px-3">
-      {data.messages.map((message, index) => {
+      {data.messages.map((message) => {
         const showDateSeparator = lastDate !== formatDate(message.date);
         const showTimestamp = shouldShowTimestamp(message.date, lastTimestamp);
 
