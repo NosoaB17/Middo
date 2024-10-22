@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isInChat(chatId) {
+      return exists(/databases/$(database)/documents/userChats/$(request.auth.uid)/$(chatId));
+    }
+    
+    // User rules
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(userId);
+    }
+    
+    // Chat rules
+    match /chats/{chatId} {
+      allow read, write: if isInChat(chatId);
+      
+      // Messages rules
+      match /messages/{messageId} {
+        allow read: if isInChat(chatId);
+        allow create: if isSignedIn() && isInChat(chatId);
+        allow update, delete: if isOwner(resource.data.senderId);
+        
+        // Replies rules
+        match /replies/{replyId} {
+          allow read: if isInChat(chatId);
+          allow create: if isSignedIn() && isInChat(chatId);
+          allow update, delete: if isOwner(resource.data.senderId);
+        }
+      }
+    }
+    
+    // UserChats rules
+    match /userChats/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+  }
+}
