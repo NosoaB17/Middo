@@ -1,6 +1,9 @@
-// Header.jsx
 import { useContext } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
+
+import Call from "../../../assets/conversation/call.svg";
+import Search from "../../../assets/conversation/search.svg";
+import Info from "../../../assets/conversation/info.svg";
 
 const createHashtagFromDisplayName = (displayName) => {
   if (!displayName) return "";
@@ -25,7 +28,7 @@ const Header = () => {
   const { data } = useContext(ChatContext);
 
   return (
-    <div className="flex w-full items-center border-b px-1 pt-2.5 pb-0.5 md:px-3">
+    <div className="flex w-full items-center border-b px-1 pt-1 pb-0.5 md:px-3">
       <div className="flex flex-1 items-center gap-2">
         <div className="flex items-center gap-2 active:opacity-30 md:cursor-pointer">
           <div className="relative">
@@ -61,13 +64,13 @@ const Header = () => {
       </div>
       <div className="ml-auto mr-1 flex items-center gap-1">
         <button className="flex items-center justify-center focus:outline-none transition-all rounded-full bg-transparent text-primary md:hover:bg-blue-200 p-0 shrink-0 md:w-9 md:h-9 w-11 h-11">
-          <span className="material-symbols-outlined">call</span>
+          <img src={Call} alt="call-icon" />
         </button>
         <button className="flex items-center justify-center focus:outline-none transition-all rounded-full bg-transparent text-primary md:hover:bg-blue-200 p-0 shrink-0 md:w-9 md:h-9 w-11 h-11">
-          <span className="material-symbols-outlined">search</span>
+          <img src={Search} alt="search-icon" />
         </button>
         <button className="flex items-center justify-center focus:outline-none transition-all rounded-full bg-transparent text-primary md:hover:bg-blue-200 p-0 shrink-0 md:w-9 md:h-9 w-11 h-11">
-          <span className="material-symbols-outlined">info</span>
+          <img src={Info} alt="info-icon" />
         </button>
       </div>
     </div>

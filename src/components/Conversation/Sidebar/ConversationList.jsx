@@ -1,11 +1,9 @@
-// ConversationList.jsx
 import { useContext, useMemo } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 
 const ConversationList = () => {
   const { data, dispatch } = useContext(ChatContext);
 
-  // Sử dụng useMemo để tối ưu hiệu suất khi sắp xếp và định dạng danh sách đoạn hội thoại
   const sortedConversations = useMemo(() => {
     return [...data.conversations].sort((a, b) => b.date - a.date);
   }, [data.conversations]);
@@ -17,7 +15,6 @@ const ConversationList = () => {
     });
   };
 
-  // Hàm để định dạng ngày giờ
   const formatDate = (timestamp) => {
     if (!timestamp) return "";
     const date = timestamp.toDate();

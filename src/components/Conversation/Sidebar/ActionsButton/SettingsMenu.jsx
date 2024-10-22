@@ -1,5 +1,3 @@
-import React from "react";
-
 const SettingsMenu = ({ onClose }) => {
   return (
     <div className="w-56 bg-white rounded-md shadow-lg z-50 border border-gray-200">

@@ -21,14 +21,14 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-[calc(100dvh_-_52px)] relative flex w-full flex-col overflow-hidden border-r">
+    <div className="h-full flex flex-col overflow-hidden">
       {activeModal === "newConversation" && (
         <NewConversationModal onClose={closeModal} />
       )}
       {activeModal === "newCall" && <NewCallModal onClose={closeModal} />}
       {!activeModal && (
         <>
-          <div className="w-full bg-background px-3 pt-3">
+          <div className="px-3 pt-8  bg-background">
             <div className="mb-3 flex items-center justify-between">
               <h6 className="scroll-m-20 text-[18px] font-semibold tracking-tight">
                 Conversation
@@ -42,17 +42,13 @@ const Sidebar = () => {
               <SearchBar />
             </div>
           </div>
-          <div className="relative flex flex-1 flex-col overflow-hidden">
-            <div className="relative flex w-full flex-1 flex-col overflow-hidden bg-background">
-              <div className="w-full">
-                <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-              </div>
-              <div className="relative h-full w-full flex-1 overflow-hidden">
-                <ConversationList
-                  activeTab={activeTab}
-                  conversations={data.conversations}
-                />
-              </div>
+          <div className="flex-1 overflow-hidden">
+            <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <div className="h-full overflow-y-auto">
+              <ConversationList
+                activeTab={activeTab}
+                conversations={data.conversations}
+              />
             </div>
           </div>
         </>

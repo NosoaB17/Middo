@@ -1,9 +1,10 @@
-// SearchBar.jsx
 import { useState, useContext } from "react";
 import { ChatContext } from "../../../contexts/ChatContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase";
+
+import Search from "../../../assets/conversation/search2.svg";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,7 +63,7 @@ const SearchBar = () => {
                 className="flex aspect-square h-full items-center justify-center p-2 text-primary disabled:text-text"
                 disabled={!searchTerm.trim()}
               >
-                <span className="material-symbols-outlined">search</span>
+                <img src={Search} alt="search-icon" style={{ fill: "#333" }} />
               </button>
             </div>
           </div>

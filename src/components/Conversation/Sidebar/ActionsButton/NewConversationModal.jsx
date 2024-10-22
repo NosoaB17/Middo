@@ -1,5 +1,4 @@
-import React from "react";
-
+// eslint-disable-next-line react/prop-types
 const NewConversationModal = ({ onClose }) => {
   return (
     <div className="h-full flex flex-col bg-white">
@@ -15,7 +14,7 @@ const NewConversationModal = ({ onClose }) => {
         </h2>
       </div>
       <div className="mt-2 flex items-center gap-2 space-y-1 border-b px-5 pb-5">
-        <span class="text-base color-[#333]">To: </span>
+        <span className="text-base color-[#333]">To: </span>
         <div className="relative w-full overflow-hidden rounded-xl border bg-background transition-all">
           <div className="flex h-11 pl-1 transition-all">
             <input
@@ -26,7 +25,7 @@ const NewConversationModal = ({ onClose }) => {
             />
             <div className="flex h-11 w-11 items-center bg-inherit ">
               <button className="flex aspect-square h-full items-center justify-center p-2 text-primary">
-                <span class="material-symbols-outlined">search</span>
+                <span className="material-symbols-outlined">search</span>
               </button>
             </div>
           </div>
@@ -37,13 +36,13 @@ const NewConversationModal = ({ onClose }) => {
           type="button"
           className="flex items-center justify-center focus:outline-none font-medium text-neutral-50 bg-blue-500 md:hover:bg-blue-600  py-3 px-5 rounded-xl w-full"
         >
-          <span class="material-symbols-outlined mr-3 h-5 w-5">group</span>
+          <span className="material-symbols-outlined mr-3 h-5 w-5">group</span>
           Create group chat
         </button>
       </div>
       <div className="flex w-full flex-1 flex-col overflow-y-auto px-2">
         <div className="flex items-center justify-between px-3 pb-2">
-          <h5 class="scroll-m-20 tracking-tight text-base font-normal opacity-60">
+          <h5 className="scroll-m-20 tracking-tight text-base font-normal opacity-60">
             Suggestion
           </h5>
         </div>
@@ -53,7 +52,7 @@ const NewConversationModal = ({ onClose }) => {
               <div className="flex w-full items-center gap-2">
                 <div className="relative">
                   {" "}
-                  <div class="overflow-hidden shrink-0 relative aspect-square size-12 rounded-full border border-neutral-50 dark:border-neutral-800">
+                  <div className="overflow-hidden shrink-0 relative aspect-square size-12 rounded-full border border-neutral-50 dark:border-neutral-800">
                     <img
                       src="https://lh3.googleusercontent.com/a/ACg8ocIo8ZGzIcaA2_dyzYhoEvmHIRpealTVG1t6WooUNG0VVP8U93g=s96-c"
                       className="absolute h-full w-full text-transparent"
@@ -68,7 +67,7 @@ const NewConversationModal = ({ onClose }) => {
                       </span>
                     </div>
                   </div>
-                  <span class="highlight-able line-clamp-1 break-all text-sm ">
+                  <span className="highlight-able line-clamp-1 break-all text-sm ">
                     @qn14fc
                   </span>
                 </div>

@@ -1,5 +1,4 @@
-import React from "react";
-
+// eslint-disable-next-line react/prop-types
 const NewCallModal = ({ onClose }) => {
   return (
     <div className="h-full flex flex-col bg-white">
@@ -15,8 +14,8 @@ const NewCallModal = ({ onClose }) => {
       <div className="flex h-full w-full flex-col overflow-hidden rounded-md bg-card shadow-sm">
         <div className="flex flex-1 flex-col overflow-hidden">
           <div className="flex w-full flex-1 flex-col overflow-y-auto px-2 pt-2">
-            <div class="flex items-center justify-between px-3 pb-2">
-              <h5 class="text-text scroll-m-20 tracking-tight text-base font-normal opacity-60">
+            <div className="flex items-center justify-between px-3 pb-2">
+              <h5 className="text-text scroll-m-20 tracking-tight text-base font-normal opacity-60">
                 Suggestion
               </h5>
             </div>
@@ -44,7 +43,7 @@ const NewCallModal = ({ onClose }) => {
                       </div>
                       <div className="flex items-center">
                         <span className="text-sm text-text/50">
-                          @Username/member's group
+                          @Username/Member's group
                         </span>
                       </div>
                     </div>
