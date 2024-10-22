@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ChatContext } from "../../contexts/ChatContext";
 import Header from "./MessageBox/Header";
 import MessageList from "./MessageBox/MessageList";
@@ -9,6 +9,13 @@ const MessageBox = () => {
   const { data } = useContext(ChatContext);
   const [isDiscussionOpen, setIsDiscussionOpen] = useState(false);
   const [discussionMessageId, setDiscussionMessageId] = useState(null);
+
+  useEffect(() => {
+    if (isDiscussionOpen) {
+      setIsDiscussionOpen(false);
+      setDiscussionMessageId(null);
+    }
+  }, [data.chatId]);
 
   const handleOpenDiscussion = (messageId) => {
     setDiscussionMessageId(messageId);

@@ -13,7 +13,6 @@ import {
 } from "firebase/firestore";
 import MessageItem from "./MessageItem";
 
-// eslint-disable-next-line react/prop-types
 const MessageList = ({ onOpenDiscussion }) => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);

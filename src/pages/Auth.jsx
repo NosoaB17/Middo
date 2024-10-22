@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import SignIn from "../components/Auth/SignIn";
 import SignUp from "../components/Auth/SignUp";
 import ForgotPass from "../components/Auth/ForgotPass";
@@ -12,7 +12,6 @@ const Auth = () => {
     setCurrentForm(form);
   };
 
-  // Helper function to determine class for each form
   const getFormClass = (formName) => {
     const baseClass =
       "absolute top-0 left-0 w-full h-full transition-all duration-500 ease-in-out";

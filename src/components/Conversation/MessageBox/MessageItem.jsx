@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 
@@ -28,7 +27,7 @@ const MessageItem = ({
     ) : (
       <>
         <div
-          className={`relative max-w-[50%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
+          className={`relative max-w-[60%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
             isCurrentUser ? "bg-blue-500 text-white" : "bg-[#f2f2f2] text-black"
           }`}
           onClick={() => onMessageClick(message.id)}
@@ -50,7 +49,7 @@ const MessageItem = ({
         {isHovered && (
           <div
             className={`absolute flex gap-2 ${
-              isCurrentUser ? "right-0 mr-[50%]" : "left-0 ml-[50%]"
+              isCurrentUser ? "right-0 mr-[60%]" : "left-0 ml-[60%]"
             }`}
           >
             {isCurrentUser ? (
