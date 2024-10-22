@@ -1,4 +1,3 @@
-import React from "react";
 import historyLogo from "../../assets/products/history.svg";
 import phrasesLogo from "../../assets/products/phrases.svg";
 import copyAllLogo from "../../assets/products/copy-all.svg";
@@ -11,7 +10,6 @@ const AddFeatures = ({
   isEslMatched,
   sourceLanguage,
   targetLanguage,
-  onTranscript,
   setSourceText,
   handleTranslate,
 }) => {
@@ -56,7 +54,7 @@ const AddFeatures = ({
         >
           <img src={copyAllLogo} alt="Copy All" className="w-5 h-5" />
         </button>
-        <div class="relative ">
+        <div className="relative ">
           <RecordToTranslate
             onTranscript={handleTranscript}
             sourceLanguage={sourceLanguage}

@@ -5,6 +5,8 @@ import MessageList from "./MessageBox/MessageList";
 import InputBox from "./MessageBox/InputBox";
 import Discussion from "./MessageBox/Discussion";
 
+import Start from "../../assets/conversation/Start.png";
+
 const MessageBox = () => {
   const { data } = useContext(ChatContext);
   const [isDiscussionOpen, setIsDiscussionOpen] = useState(false);
@@ -55,9 +57,7 @@ const MessageBox = () => {
         </>
       ) : (
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">
-            Select a conversation to start chatting
-          </p>
+          <img src={Start} />
         </div>
       )}
     </div>

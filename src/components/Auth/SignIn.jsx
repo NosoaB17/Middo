@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn, signInWithGoogle } from "../../services/authService";
 
@@ -93,7 +93,7 @@ const SignIn = ({ onSwitchForm }) => {
       </form>
 
       <p className="text-[#333] font-sans tracking-tight leading-6 mt-20 mb-10 text-center">
-        Don't have an account yet?
+        Do not have an account yet?
       </p>
       <button
         onClick={() => onSwitchForm("signup")}

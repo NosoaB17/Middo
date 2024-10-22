@@ -1,4 +1,3 @@
-// eslint-disable-next-line react/prop-types
 const NewCallModal = ({ onClose }) => {
   return (
     <div className="h-full flex flex-col bg-white">
@@ -36,15 +35,11 @@ const NewCallModal = ({ onClose }) => {
                     <div className="w-full flex-1 overflow-hidden">
                       <div className="mb-1 flex items-center justify-between">
                         <div className="flex w-full max-w-full flex-row items-center gap-2">
-                          <span className="font-normal">
-                            Username/Group's name
-                          </span>
+                          <span className="font-normal">Username</span>
                         </div>
                       </div>
                       <div className="flex items-center">
-                        <span className="text-sm text-text/50">
-                          @Username/Member's group
-                        </span>
+                        <span className="text-sm text-text/50">@Username</span>
                       </div>
                     </div>
                   </a>

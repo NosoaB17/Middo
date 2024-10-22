@@ -1,6 +1,5 @@
 import { Edit2 } from "lucide-react";
 
-// eslint-disable-next-line react/prop-types
 const ESLTool = ({ isOpen, onToggle, translatedText, onEdit }) => {
   return (
     <div

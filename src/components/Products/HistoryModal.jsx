@@ -1,4 +1,3 @@
-import React from "react";
 import historyLogo from "../../assets/products/history2.svg";
 import clearLogo from "../../assets/products/clear.svg";
 import copyAllLogo from "../../assets/products/copy-all.svg";

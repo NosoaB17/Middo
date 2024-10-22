@@ -55,7 +55,7 @@ const NavBar = () => {
             <Link
               key={index}
               to={item.to}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+              className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
               onClick={() => {
                 if (item.onClick) item.onClick();
                 onClose();

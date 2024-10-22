@@ -1,4 +1,3 @@
-import React from "react";
 import SolutionCard from "./SolutionCard";
 
 import translationImage from "../../assets/home/solution/Solution_translation.png";

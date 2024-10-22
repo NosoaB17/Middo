@@ -10,7 +10,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { Send, Smile, Paperclip, Earth, ChevronUp } from "lucide-react";
+import { Send, Smile, Paperclip, Earth, ChevronUp, Mic } from "lucide-react";
 import { translateText } from "../../../services/translationService";
 import debounce from "lodash/debounce";
 import ESLTool from "./ESLTool";
@@ -144,7 +144,7 @@ const DiscussionInput = () => {
         onEdit={handleEditTranslation}
       />
       <div
-        className={`flex min-h-[82px] w-full flex-col rounded-2xl border p-1 shadow-sm overflow-hidden transition-all duration-300 ${
+        className={`flex min-h-[86px] w-full flex-col rounded-2xl border p-1 shadow-sm overflow-hidden transition-all duration-300 ${
           isFocused ? "border-[#3d88ed]" : "border-primary"
         }`}
       >
@@ -184,17 +184,21 @@ const DiscussionInput = () => {
             className="flex-grow resize-none overflow-hidden bg-transparent focus:outline-none"
             rows={1}
           />
-          {message.trim() && (
+          {message.trim() ? (
             <button
               onClick={handleSend}
               disabled={isTranslating}
-              className={`text-white rounded-full p-2 ${
+              className={`text-white rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 ${
                 isTranslating
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-500 hover:bg-blue-600"
               }`}
             >
               <Send className="w-5 h-5" />
+            </button>
+          ) : (
+            <button className="text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
+              <Mic className="w-5 h-5" />
             </button>
           )}
         </div>

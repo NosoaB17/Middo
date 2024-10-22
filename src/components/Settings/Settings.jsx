@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import detectIcon from "../../assets/products/lang-detect.svg";
 import englishIcon from "../../assets/products/uk-flag.svg";
 import vietnameseIcon from "../../assets/products/vn-flag.svg";

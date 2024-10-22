@@ -1,4 +1,4 @@
-const SettingsMenu = ({ onClose }) => {
+const SettingsMenu = () => {
   return (
     <div className="w-56 bg-white rounded-md shadow-lg z-50 border border-gray-200">
       <div className="py-2 px-3">

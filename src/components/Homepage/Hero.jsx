@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import MiddoIntroVideo from "../../assets/home/hero/MiddoIntroVideo.mp4";
 import { FaWindows } from "react-icons/fa";
 

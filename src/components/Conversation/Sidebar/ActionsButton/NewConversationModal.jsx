@@ -1,4 +1,3 @@
-// eslint-disable-next-line react/prop-types
 const NewConversationModal = ({ onClose }) => {
   return (
     <div className="h-full flex flex-col bg-white">

@@ -27,7 +27,6 @@ const TranslateArea = ({
   const [fontSize, setFontSize] = useState(22);
   const [textareaHeight, setTextareaHeight] = useState("auto");
 
-  // Update editedEslText when eslText changes (e.g., after language swap)
   useEffect(() => {
     setEditedEslText(eslText?.[type] || "");
   }, [eslText, type]);
@@ -70,7 +69,6 @@ const TranslateArea = ({
       en: "gb",
       ko: "kr",
       vi: "vn",
-      // Add more mappings as needed
     };
     return languageToCountry[lang] || lang;
   }, []);
@@ -249,9 +247,8 @@ const TranslateArea = ({
           <button
             onClick={handleClear}
             type="button"
-            class="flex items-center justify-center focus-outline-none rounded-full bg-transparent text-neutral-700 md:hover:bg-neutral-50 absolute right-3 top-3 p-0 shrink-0 md:w-9 md:h-9 w-11 h-11"
+            className="flex items-center justify-center focus-outline-none rounded-full bg-transparent text-neutral-700 md:hover:bg-neutral-50 absolute right-3 top-3 p-0 shrink-0 md:w-9 md:h-9 w-11 h-11"
             data-label-id="0"
-            data-metatip="true"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

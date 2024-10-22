@@ -52,7 +52,7 @@ const MessageMenu = ({
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute z-10 bg-white rounded-lg shadow-lg py-2 w-48 ${
+          className={`absolute  bg-white shadow-lg py-2 w-48 z-50 min-w-[8rem] overflow-hidden border p-1 rounded-2xl  ${
             position === "left" ? "left-0" : "right-0"
           }`}
         >
@@ -81,7 +81,7 @@ const MessageMenu = ({
 
 const MenuItem = ({ icon, text, onClick, className = "" }) => (
   <div
-    className={`flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer ${className}`}
+    className={`relative flex cursor-pointer select-none items-center px-3 outline-none transition-colors py-3 md:py-1 text-base rounded-xl my-1  ${className}`}
     onClick={onClick}
   >
     {icon}

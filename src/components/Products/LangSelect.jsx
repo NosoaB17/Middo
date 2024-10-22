@@ -24,7 +24,6 @@ const LangSelect = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSourceLang, setRecentSourceLang] = useState(null);
   const [recentTargetLang, setRecentTargetLang] = useState(null);
-  // Thêm state mới
   const [detectedLang, setDetectedLang] = useState(null);
 
   const filteredLanguages = useMemo(() => {

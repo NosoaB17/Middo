@@ -59,7 +59,7 @@ const Header = () => {
             <img src={SignInIcon} alt="Sign In" />
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-32 h-18 rounded-2xl bg-white rounded-lg shadow-lg py-1 z-50">
+            <div className="absolute right-0 mt-2 w-32 h-18 rounded-2xl bg-white shadow-lg py-1 z-50">
               <a
                 href="/signin"
                 className="flex items-center px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"

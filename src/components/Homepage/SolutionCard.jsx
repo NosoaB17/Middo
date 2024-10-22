@@ -1,4 +1,3 @@
-import React from "react";
 import headerIcon from "../../assets/home/solution/sparkle.svg";
 import featureIcon from "../../assets/home/solution/star.svg";
 
