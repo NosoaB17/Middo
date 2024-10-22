@@ -24,13 +24,13 @@ const MessageBox = () => {
     <div className="flex h-full flex-1 flex-col overflow-hidden rounded-lg bg-card md:rounded-none mt-5">
       {data.chatId !== "null" ? (
         <>
-          <Header />
           <div className="relative flex flex-1 overflow-hidden">
             <div
               className={`relative flex h-full w-full flex-col overflow-hidden ${
                 isDiscussionOpen ? "w-2/3" : "w-full"
               }`}
             >
+              <Header />
               <div className="relative flex h-full w-full flex-1 overflow-hidden">
                 <MessageList onOpenDiscussion={handleOpenDiscussion} />
               </div>

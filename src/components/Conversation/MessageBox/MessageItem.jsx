@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 
@@ -21,7 +22,7 @@ const MessageItem = ({
     {isRemoved ? (
       <div className="px-3 py-2 md:py-1 bg-primary !bg-transparent me">
         <div className="break-word-mt text-start text-base md:text-sm text-neutral-400">
-          removed a message
+          Removed a message
         </div>
       </div>
     ) : (
