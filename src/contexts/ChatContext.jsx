@@ -5,7 +5,6 @@ import { db } from "../firebase";
 
 export const ChatContext = createContext();
 
-// eslint-disable-next-line react/prop-types
 export const ChatContextProvider = ({ children }) => {
   const { currentUser } = useContext(AuthContext);
   const INITIAL_STATE = {
@@ -105,7 +104,6 @@ export const ChatContextProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useChat = () => {
   const context = useContext(ChatContext);
   if (context === undefined) {

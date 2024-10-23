@@ -3,7 +3,6 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { DiscussionContext } from "../../../contexts/DiscussionContext";
 import MessageItem from "./MessageItem";
 import "../../../styles/scrollbar.css";
-import "../../../styles/scrollbar.css";
 
 const ReplyList = () => {
   const { currentUser } = useContext(AuthContext);

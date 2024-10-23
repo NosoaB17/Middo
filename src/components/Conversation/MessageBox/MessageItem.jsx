@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 import MessageReplyInfo from "./MessageReplyInfo";
+import { ChatContext } from "../../../contexts/ChatContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const MessageItem = ({
   message,
@@ -16,12 +19,26 @@ const MessageItem = ({
   replyCount,
   repliers,
 }) => {
+  const { data } = useContext(ChatContext);
+  const { currentUser } = useContext(AuthContext);
+
+  const renderAvatar = (photoURL, isCurrentUser) => (
+    <div className={` ${isCurrentUser ? "justify-end" : "justify-start"} mb-1`}>
+      <img
+        src={photoURL || "/default-avatar.png"}
+        alt="avatar"
+        className="w-6 h-6 rounded-full object-cover"
+      />
+    </div>
+  );
+
   return (
     <div
       className={`relative flex flex-col text-sm ${
         isCurrentUser ? "items-end" : "items-start"
       }`}
     >
+      {isCurrentUser ? <></> : renderAvatar(data?.user?.photoURL, false)}
       {isRemoved ? (
         <div className="px-3 py-2 md:py-1 bg-primary !bg-transparent me">
           <div className="break-word-mt text-start text-base md:text-sm text-neutral-400">
