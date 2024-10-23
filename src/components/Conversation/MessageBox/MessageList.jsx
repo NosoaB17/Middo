@@ -13,6 +13,8 @@ import {
 } from "firebase/firestore";
 import MessageItem from "./MessageItem";
 
+import "../../../styles/scrollbar.css";
+
 const MessageList = ({ onOpenDiscussion }) => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
@@ -106,7 +108,7 @@ const MessageList = ({ onOpenDiscussion }) => {
   let lastTimestamp = null;
 
   return (
-    <div className="relative bg-primary/5 flex w-full flex-1 flex-col gap-2.5 overflow-x-hidden overflow-y-scroll px-2 md:px-3">
+    <div className="relative bg-primary/5 flex w-full flex-1 flex-col gap-2.5 overflow-x-hidden overflow-y-scroll px-2 md:px-3 custom-scrollbar">
       {data.messages.map((message) => {
         const showDateSeparator = lastDate !== formatDate(message.date);
         const showTimestamp = shouldShowTimestamp(message.date, lastTimestamp);
@@ -123,6 +125,9 @@ const MessageList = ({ onOpenDiscussion }) => {
         const isRemoved = message.isRemoved;
         const isHovered = hoveredMessageId === message.id;
         const isSelected = selectedMessageId === message.id;
+
+        const replyCount = message.replyCount || 0;
+        const repliers = message.repliers || [];
 
         return (
           <React.Fragment key={message.id}>
@@ -159,6 +164,8 @@ const MessageList = ({ onOpenDiscussion }) => {
                 onRemove={handleRemoveMessage}
                 onReplyInDiscussion={handleReplyInDiscussion}
                 formatTime={formatTime}
+                replyCount={replyCount}
+                repliers={repliers}
               />
             </div>
           </React.Fragment>

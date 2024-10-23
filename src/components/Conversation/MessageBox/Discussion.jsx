@@ -37,7 +37,7 @@ const DiscussionContent = ({ onClose }) => {
       </div>
 
       <div className="relative overflow-hidden flex h-full flex-1 flex-col">
-        <div className="flex flex-1 flex-col overflow-y-scroll">
+        <div className="flex flex-1 flex-col overflow-y-scroll custom-scrollbar">
           {originMessage && <DiscussionMessage message={originMessage} />}
           <div className="my-0.5 flex items-center justify-center gap-3">
             <div className="h-[1px] flex-1 bg-neutral-100"></div>

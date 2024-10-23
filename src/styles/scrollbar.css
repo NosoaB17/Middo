@@ -1,0 +1,45 @@
+/* Custom Scrollbar Styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Ẩn các nút mũi tên */
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Tùy chỉnh thanh scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track trong suốt */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0; /* Tạo khoảng cách để bo tròn 2 đầu */
+}
+
+/* Thumb với bo tròn đầy đủ */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px; /* Bo tròn tối đa */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  min-height: 40px; /* Chiều cao tối thiểu của thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Corner trong suốt */
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Thêm padding cho container để tránh nội dung bị che khuất */
+.scroll-container {
+  padding-right: 10px; /* Tạo khoảng cách cho scrollbar */
+}

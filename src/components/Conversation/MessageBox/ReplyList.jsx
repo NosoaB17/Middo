@@ -2,6 +2,8 @@ import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { DiscussionContext } from "../../../contexts/DiscussionContext";
 import MessageItem from "./MessageItem";
+import "../../../styles/scrollbar.css";
+import "../../../styles/scrollbar.css";
 
 const ReplyList = () => {
   const { currentUser } = useContext(AuthContext);
@@ -21,7 +23,7 @@ const ReplyList = () => {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-2 p-3">
+    <div className="flex flex-1 flex-col gap-2 p-3 custom-scrollbar">
       {data.replies.map((reply) => (
         <MessageItem
           key={reply.id}
