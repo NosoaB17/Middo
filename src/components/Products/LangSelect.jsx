@@ -108,7 +108,7 @@ const LangSelect = ({
               className="w-5 h-5 mr-2"
             />
           )}
-          <span>{languageName}</span>
+          <span className="text-[#333]">{languageName}</span>
         </button>
       );
     },

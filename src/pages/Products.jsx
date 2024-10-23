@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import LangSelect from "../components/Products/LangSelect";
 import TranslateArea from "../components/Products/TranslateArea";
 import AddFeatures from "../components/Products/AddFeatures";

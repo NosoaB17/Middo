@@ -4,7 +4,9 @@ import speakerLogo from "../../assets/products/speaker.svg";
 import editLogo from "../../assets/products/edit.svg";
 import checkIcon from "../../assets/products/check.svg";
 import { textToSpeech } from "../../services/translationService";
+import ResponsiveTextArea from "./ResponsiveTextArea";
 
+import { X } from "lucide-react";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -89,20 +91,16 @@ const TranslateArea = ({
   const handleTextChange = useCallback(
     (e) => {
       setText(e.target.value);
-      adjustFontSize();
       if (type === "source") {
-        // Cancel previous timeout if it exists
         if (window.translationTimeout) {
           clearTimeout(window.translationTimeout);
         }
-
-        // Set new timeout
         window.translationTimeout = setTimeout(() => {
           onTranslate(e.target.value);
         }, 2000);
       }
     },
-    [setText, type, onTranslate, adjustFontSize]
+    [setText, type, onTranslate]
   );
 
   const handleCopy = useCallback(() => {
@@ -250,34 +248,20 @@ const TranslateArea = ({
             className="flex items-center justify-center focus-outline-none rounded-full bg-transparent text-neutral-700 md:hover:bg-neutral-50 absolute right-3 top-3 p-0 shrink-0 md:w-9 md:h-9 w-11 h-11"
             data-label-id="0"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-circle-x inline-block w-5 h-5"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="m15 9-6 6"></path>
-              <path d="m9 9 6 6"></path>
-            </svg>
+            <X />
           </button>
         </div>
-        <textarea
-          id={`${type}-textarea`}
+        <ResponsiveTextArea
           value={text}
           onChange={handleTextChange}
           placeholder={
             type === "source" ? "Enter your text here" : "Translation"
           }
           readOnly={type === "target"}
-          style={{ fontSize: `${fontSize}px`, height: textareaHeight }}
-          className="w-full bg-transparent font-medium text-[#020817] text-xl leading-relaxed flex-1 border-none resize-none outline-none mb-4"
+          minHeight={120}
+          maxHeight={500}
+          initialFontSize={22}
+          minFontSize={16}
         />
 
         {renderEslSection}
