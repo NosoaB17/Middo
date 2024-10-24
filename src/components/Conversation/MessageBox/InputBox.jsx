@@ -13,9 +13,11 @@ import { Earth, Paperclip, Smile, Mic, Send, ChevronUp } from "lucide-react";
 import { translateText } from "../../../services/translationService";
 import debounce from "lodash/debounce";
 import ESLTool from "./ESLTool";
+import EmojiPicker from "./EmojiPicker";
 
 const InputBox = () => {
   const [message, setMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [detectedLanguage, setDetectedLanguage] = useState("");
   const [translatedMessage, setTranslatedMessage] = useState("");
   const [isDetectLanguageOpen, setIsDetectLanguageOpen] = useState(false);
@@ -119,8 +121,23 @@ const InputBox = () => {
     console.log("Edit translation");
   };
 
+  const handleEmojiSelect = (emoji) => {
+    const start = inputRef.current?.selectionStart || 0;
+    const end = inputRef.current?.selectionEnd || 0;
+    const newMessage = message.slice(0, start) + emoji + message.slice(end);
+
+    setMessage(newMessage);
+
+    // Di chuyển con trỏ sau emoji
+    setTimeout(() => {
+      const newCursor = start + emoji.length;
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(newCursor, newCursor);
+    });
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <ESLTool
         isOpen={isESLToolOpen}
         onToggle={() => setIsESLToolOpen(!isESLToolOpen)}
@@ -135,7 +152,7 @@ const InputBox = () => {
       >
         <div className="flex items-center">
           <div className="mr-3 flex-1">
-            <div className="w-full">
+            <div className="w-full relative">
               {" "}
               <button
                 onClick={() => setIsDetectLanguageOpen(!isDetectLanguageOpen)}
@@ -154,9 +171,18 @@ const InputBox = () => {
           <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
             <Paperclip className="w-5 h-5" />
           </button>
-          <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
+          <button
+            className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
             <Smile className="w-5 h-5" />
           </button>
+          {showEmojiPicker && (
+            <EmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              onClose={() => setShowEmojiPicker(false)}
+            />
+          )}
         </div>
         <div className="flex items-center px-2 py-1">
           <textarea

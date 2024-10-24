@@ -14,6 +14,7 @@ import { Send, Smile, Paperclip, Earth, ChevronUp, Mic } from "lucide-react";
 import { translateText } from "../../../services/translationService";
 import debounce from "lodash/debounce";
 import ESLTool from "./ESLTool";
+import EmojiPicker from "./EmojiPicker";
 
 const DiscussionInput = () => {
   const [message, setMessage] = useState("");
@@ -23,6 +24,8 @@ const DiscussionInput = () => {
   const [isDetectLanguageOpen, setIsDetectLanguageOpen] = useState(false);
   const [isESLToolOpen, setIsESLToolOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
   const { data: chatData } = useContext(ChatContext);
@@ -65,6 +68,22 @@ const DiscussionInput = () => {
       }
     }, 300)
   ).current;
+
+  // Thêm hàm xử lý emoji mới
+  const handleEmojiSelect = (emoji) => {
+    const start = inputRef.current?.selectionStart || 0;
+    const end = inputRef.current?.selectionEnd || 0;
+    const newMessage = message.slice(0, start) + emoji + message.slice(end);
+
+    setMessage(newMessage);
+
+    // Di chuyển con trỏ sau emoji
+    setTimeout(() => {
+      const newCursor = start + emoji.length;
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(newCursor, newCursor);
+    });
+  };
 
   useEffect(() => {
     debouncedDetectLanguage(message);
@@ -168,9 +187,18 @@ const DiscussionInput = () => {
           <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
             <Paperclip className="w-5 h-5" />
           </button>
-          <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
+          <button
+            className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
             <Smile className="w-5 h-5" />
           </button>
+          {showEmojiPicker && (
+            <EmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              onClose={() => setShowEmojiPicker(false)}
+            />
+          )}
         </div>
         <div className="flex items-center px-2 py-1">
           <textarea
