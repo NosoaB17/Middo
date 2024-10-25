@@ -14,6 +14,7 @@ import { translateText } from "../../../services/translationService";
 import debounce from "lodash/debounce";
 import ESLTool from "./ESLTool";
 import EmojiPicker from "./EmojiPicker";
+import FileUpload from "./FileUpload";
 
 const InputBox = () => {
   const [message, setMessage] = useState("");
@@ -27,6 +28,9 @@ const InputBox = () => {
   const { data } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
   const inputRef = useRef(null);
+
+  const fileInputRef = useRef(null);
+  const [showFileUpload, setShowFileUpload] = useState(false);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -121,6 +125,34 @@ const InputBox = () => {
     console.log("Edit translation");
   };
 
+  const handleFileUpload = async (fileData) => {
+    try {
+      await addDoc(collection(db, "chats", data.chatId, "messages"), {
+        type: "file",
+        fileData,
+        senderId: currentUser.uid,
+        date: serverTimestamp(),
+      });
+
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [`${data.chatId}.lastMessage`]: {
+          text: `Sent a file: ${fileData.name}`,
+        },
+        [`${data.chatId}.date`]: serverTimestamp(),
+      });
+
+      await updateDoc(doc(db, "userChats", data.user.uid), {
+        [`${data.chatId}.lastMessage`]: {
+          text: `Sent a file: ${fileData.name}`,
+        },
+        [`${data.chatId}.date`]: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error sending file: ", error);
+      alert("Failed to send file");
+    }
+  };
+
   const handleEmojiSelect = (emoji) => {
     const start = inputRef.current?.selectionStart || 0;
     const end = inputRef.current?.selectionEnd || 0;
@@ -138,6 +170,7 @@ const InputBox = () => {
 
   return (
     <div className="w-full relative">
+      <FileUpload ref={fileInputRef} onFileUpload={handleFileUpload} />
       <ESLTool
         isOpen={isESLToolOpen}
         onToggle={() => setIsESLToolOpen(!isESLToolOpen)}
@@ -168,9 +201,18 @@ const InputBox = () => {
               </button>
             </div>
           </div>
-          <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
+          <button
+            className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <Paperclip className="w-5 h-5" />
           </button>
+          {showFileUpload && (
+            <FileUpload
+              onFileUpload={handleFileUpload}
+              onClose={() => setShowFileUpload(false)}
+            />
+          )}
           <button
             className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
