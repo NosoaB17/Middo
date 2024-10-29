@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect } from "react";
-import { ChatContext } from "../../contexts/ChatContext";
-import Header from "./MessageBox/Header";
-import MessageList from "./MessageBox/MessageList";
-import InputBox from "./MessageBox/InputBox";
-import Discussion from "./MessageBox/Discussion";
+import { ChatContext } from "../../../contexts/ChatContext";
+import Header from "./Header";
+import MessageList from "./MessageList";
+import ChatInput from "./ChatInput";
+import Discussion from "./Discussion";
 
-import Start from "../../assets/conversation/Start.png";
+import Start from "../../../assets/conversation/Start.png";
 
 const MessageBox = () => {
   const { data } = useContext(ChatContext);
@@ -44,7 +44,7 @@ const MessageBox = () => {
                 <MessageList onOpenDiscussion={handleOpenDiscussion} />
               </div>
               <div className="relative w-full border-t p-2">
-                <InputBox />
+                <ChatInput />
               </div>
             </div>
             {isDiscussionOpen && (

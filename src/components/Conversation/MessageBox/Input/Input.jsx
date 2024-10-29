@@ -1,37 +1,30 @@
-import { useState, useContext, useRef, useEffect } from "react";
-import { AuthContext } from "../../../contexts/AuthContext";
-import { ChatContext } from "../../../contexts/ChatContext";
-import { useDiscussion } from "../../../contexts/DiscussionContext";
-import { db } from "../../../firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
-import { Send, Smile, Paperclip, Earth, ChevronUp, Mic } from "lucide-react";
-import { translateText } from "../../../services/translationService";
+import { useState, useRef, useEffect } from "react";
+import { Earth, Paperclip, Smile, Mic, Send, ChevronUp } from "lucide-react";
+import { translateText } from "../../../../services/translationService";
 import debounce from "lodash/debounce";
 import ESLTool from "./ESLTool";
 import EmojiPicker from "./EmojiPicker";
+import FileUpload from "./FileUpload";
 
-const DiscussionInput = () => {
+const Input = ({
+  onSendMessage,
+  containerClassName = "",
+  inputPlaceholder = "Type a message",
+  eslToolClassName = "",
+}) => {
   const [message, setMessage] = useState("");
-  const [isTranslating, setIsTranslating] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [detectedLanguage, setDetectedLanguage] = useState("");
   const [translatedMessage, setTranslatedMessage] = useState("");
   const [isDetectLanguageOpen, setIsDetectLanguageOpen] = useState(false);
   const [isESLToolOpen, setIsESLToolOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
 
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const inputRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-  const { currentUser } = useContext(AuthContext);
-  const { data: chatData } = useContext(ChatContext);
-  const { data: discussionData } = useDiscussion();
-  const inputRef = useRef();
-
+  // Auto-resize textarea
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
@@ -39,7 +32,7 @@ const DiscussionInput = () => {
     }
   }, [message]);
 
-  // Debounced language detection
+  // Language detection logic
   const debouncedDetectLanguage = useRef(
     debounce(async (text) => {
       if (text.trim()) {
@@ -69,77 +62,23 @@ const DiscussionInput = () => {
     }, 300)
   ).current;
 
-  // Thêm hàm xử lý emoji mới
-  const handleEmojiSelect = (emoji) => {
-    const start = inputRef.current?.selectionStart || 0;
-    const end = inputRef.current?.selectionEnd || 0;
-    const newMessage = message.slice(0, start) + emoji + message.slice(end);
-
-    setMessage(newMessage);
-
-    // Di chuyển con trỏ sau emoji
-    setTimeout(() => {
-      const newCursor = start + emoji.length;
-      inputRef.current?.focus();
-      inputRef.current?.setSelectionRange(newCursor, newCursor);
-    });
-  };
-
   useEffect(() => {
     debouncedDetectLanguage(message);
     return () => debouncedDetectLanguage.cancel();
   }, [message, debouncedDetectLanguage]);
 
   const handleSend = async () => {
-    if (!message.trim() || isTranslating || !discussionData.originMessage)
-      return;
+    if (message.trim() && !isTranslating) {
+      await onSendMessage({
+        text: message,
+        detectedLanguage,
+        translatedText: translatedMessage || null,
+      });
 
-    try {
-      setIsTranslating(true);
-
-      // Add reply to discussion
-      const replyRef = await addDoc(
-        collection(
-          db,
-          "chats",
-          chatData.chatId,
-          "messages",
-          discussionData.originMessage.id,
-          "replies"
-        ),
-        {
-          text: message,
-          senderId: currentUser.uid,
-          createdAt: serverTimestamp(),
-          detectedLanguage,
-          translatedText: translatedMessage || null,
-        }
-      );
-
-      // Update original message with reply count
-      await updateDoc(
-        doc(
-          db,
-          "chats",
-          chatData.chatId,
-          "messages",
-          discussionData.originMessage.id
-        ),
-        {
-          replyCount: (discussionData.replies.length || 0) + 1,
-          lastReplyAt: serverTimestamp(),
-        }
-      );
-
-      console.log("Reply sent:", replyRef.id);
       setMessage("");
       setTranslatedMessage("");
       setDetectedLanguage("");
       setIsESLToolOpen(false);
-    } catch (error) {
-      console.error("Error sending reply:", error);
-    } finally {
-      setIsTranslating(false);
     }
   };
 
@@ -150,22 +89,40 @@ const DiscussionInput = () => {
     }
   };
 
-  const handleEditTranslation = () => {
-    console.log("Edit translation");
+  const handleFileUpload = async (fileData) => {
+    await onSendMessage({
+      type: "file",
+      fileData,
+    });
+  };
+
+  const handleEmojiSelect = (emoji) => {
+    const start = inputRef.current?.selectionStart || 0;
+    const end = inputRef.current?.selectionEnd || 0;
+    const newMessage = message.slice(0, start) + emoji + message.slice(end);
+
+    setMessage(newMessage);
+
+    setTimeout(() => {
+      const newCursor = start + emoji.length;
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(newCursor, newCursor);
+    });
   };
 
   return (
-    <div className="border-t p-3">
+    <div className="w-full relative">
+      <FileUpload ref={fileInputRef} onFileUpload={handleFileUpload} />
       <ESLTool
         isOpen={isESLToolOpen}
         onToggle={() => setIsESLToolOpen(!isESLToolOpen)}
         translatedText={translatedMessage}
-        onEdit={handleEditTranslation}
+        className={eslToolClassName}
       />
       <div
-        className={`flex min-h-[86px] w-full flex-col rounded-2xl border p-1 shadow-sm overflow-hidden transition-all duration-300 ${
+        className={`flex min-h-[82px] w-full flex-col rounded-2xl border p-1 shadow-sm overflow-hidden transition-all duration-300 ${
           isFocused ? "border-[#3d88ed]" : "border-primary"
-        }`}
+        } ${containerClassName}`}
       >
         <div className="flex items-center">
           <div className="mr-3 flex-1">
@@ -184,7 +141,10 @@ const DiscussionInput = () => {
               </button>
             </div>
           </div>
-          <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
+          <button
+            className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <Paperclip className="w-5 h-5" />
           </button>
           <button
@@ -208,7 +168,7 @@ const DiscussionInput = () => {
             onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Type a reply..."
+            placeholder={inputPlaceholder}
             className="flex-grow resize-none overflow-hidden bg-transparent focus:outline-none"
             rows={1}
           />
@@ -225,7 +185,7 @@ const DiscussionInput = () => {
               <Send className="w-5 h-5" />
             </button>
           ) : (
-            <button className="text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
+            <button className="p-2 text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors duration-200">
               <Mic className="w-5 h-5" />
             </button>
           )}
@@ -235,4 +195,4 @@ const DiscussionInput = () => {
   );
 };
 
-export default DiscussionInput;
+export default Input;

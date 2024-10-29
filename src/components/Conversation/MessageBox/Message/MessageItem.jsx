@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 import MessageReplyInfo from "./MessageReplyInfo";
-import { ChatContext } from "../../../contexts/ChatContext";
+import { ChatContext } from "../../../../contexts/ChatContext";
 import FileAttachment from "./FileAttachment";
 
 const MessageItem = ({

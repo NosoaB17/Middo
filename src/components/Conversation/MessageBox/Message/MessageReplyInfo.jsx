@@ -7,7 +7,6 @@ const MessageReplyInfo = ({
   messageId,
   onOpenDiscussion,
 }) => {
-  // Sử dụng repliers từ message data
   const displayedRepliers = repliers?.slice(0, 2) || [];
 
   return (

@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
-import SearchBar from "./Sidebar/SearchBar";
-import Tabs from "./Sidebar/Tabs";
-import ConversationList from "./Sidebar/ConversationList";
-import ActionsButton from "./Sidebar/ActionsButton";
-import NewConversationModal from "./Sidebar/ActionsButton/NewConversationModal";
-import NewCallModal from "./Sidebar/ActionsButton/NewCallModal";
-import { ChatContext } from "../../contexts/ChatContext";
+import SearchBar from "./SearchBar";
+import Tabs from "./Tabs";
+import ConversationList from "./ConversationList";
+import ActionsButton from "./ActionsButton";
+import NewConversationModal from "./ActionsButton/NewConversationModal";
+import NewCallModal from "./ActionsButton/NewCallModal";
+import { ChatContext } from "../../../contexts/ChatContext";
 
 const Sidebar = () => {
   const [activeModal, setActiveModal] = useState(null);

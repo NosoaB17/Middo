@@ -11,7 +11,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import MessageItem from "./MessageItem";
+import MessageItem from "./Message/MessageItem";
 
 import "../../../styles/scrollbar.css";
 
