@@ -42,7 +42,6 @@ const MessageList = ({ onOpenDiscussion }) => {
           id: doc.id,
           ...doc.data(),
         }));
-        console.log("Messages updated:", messages.length, "messages");
         dispatch({ type: "SET_MESSAGES", payload: messages });
       },
       (error) => {
@@ -57,27 +56,27 @@ const MessageList = ({ onOpenDiscussion }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data.messages]);
 
-  const formatTime = (date) => {
+  // Hàm format date thống nhất
+  const formatDateTime = (date) => {
     if (!date || typeof date.toDate !== "function") return "";
-    return date
-      .toDate()
-      .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
+    const messageDate = date.toDate();
 
-  const formatDate = (date) => {
-    if (!date || typeof date.toDate !== "function") return "";
-    return date.toDate().toLocaleDateString([], {
+    return messageDate.toLocaleString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
-  const shouldShowTimestamp = (currentDate, previousDate) => {
+  // Kiểm tra xem có nên hiển thị timestamp mới không (cách nhau 1 giờ)
+  const shouldShowNewTimestamp = (currentDate, previousDate) => {
     if (!currentDate || !previousDate) return true;
     const timeDiff =
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
-    return timeDiff >= 3600000; // 1 hour in milliseconds
+    return timeDiff >= 3600000; // 1 giờ tính bằng milliseconds
   };
 
   const handleMessageClick = (messageId) => {
@@ -104,18 +103,15 @@ const MessageList = ({ onOpenDiscussion }) => {
     onOpenDiscussion(messageId);
   };
 
-  let lastDate = null;
   let lastTimestamp = null;
 
   return (
     <div className="relative bg-primary/5 flex w-full flex-1 flex-col gap-2.5 overflow-x-hidden overflow-y-scroll px-2 md:px-3 custom-scrollbar">
       {data.messages.map((message) => {
-        const showDateSeparator = lastDate !== formatDate(message.date);
-        const showTimestamp = shouldShowTimestamp(message.date, lastTimestamp);
-
-        if (showDateSeparator) {
-          lastDate = formatDate(message.date);
-        }
+        const showTimestamp = shouldShowNewTimestamp(
+          message.date,
+          lastTimestamp
+        );
 
         if (showTimestamp) {
           lastTimestamp = message.date;
@@ -131,21 +127,10 @@ const MessageList = ({ onOpenDiscussion }) => {
 
         return (
           <React.Fragment key={message.id}>
-            {showDateSeparator && (
-              <div className="my-3 flex items-center justify-center gap-3">
-                <div className="flex items-center justify-center">
-                  <div className="bg-primary/30 h-[1px] flex-grow"></div>
-                  <span className="text-xs font-light text-neutral-500 px-2">
-                    {lastDate}
-                  </span>
-                  <div className="bg-primary/30 h-[1px] flex-grow"></div>
-                </div>
-              </div>
-            )}
-            {showTimestamp && !showDateSeparator && (
-              <div className="my-2 flex items-center justify-center">
-                <span className="text-xs font-light text-neutral-500">
-                  {formatTime(message.date)}
+            {showTimestamp && (
+              <div className="my-2 flex items-center justify-center gap-3">
+                <span className="text-xs font-light text-neutral-500 px-2">
+                  {formatDateTime(message.date)}
                 </span>
               </div>
             )}
@@ -163,7 +148,7 @@ const MessageList = ({ onOpenDiscussion }) => {
                 onSelectIcon={handleSelectIcon}
                 onRemove={handleRemoveMessage}
                 onReplyInDiscussion={handleReplyInDiscussion}
-                formatTime={formatTime}
+                formatTime={formatDateTime}
                 replyCount={replyCount}
                 repliers={repliers}
               />

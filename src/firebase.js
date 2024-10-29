@@ -1,11 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import {
-  getFirestore,
-  initializeFirestore,
-  CACHE_SIZE_UNLIMITED,
-} from "firebase/firestore";
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDZS1pPXCs94-A14cExRnGQuRoG0g98yog",

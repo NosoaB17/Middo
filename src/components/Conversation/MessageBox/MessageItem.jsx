@@ -3,7 +3,7 @@ import { SmilePlus } from "lucide-react";
 import MessageMenu from "./MessageMenu";
 import MessageReplyInfo from "./MessageReplyInfo";
 import { ChatContext } from "../../../contexts/ChatContext";
-import { AuthContext } from "../../../contexts/AuthContext";
+import FileAttachment from "./FileAttachment";
 
 const MessageItem = ({
   message,
@@ -20,7 +20,6 @@ const MessageItem = ({
   repliers,
 }) => {
   const { data } = useContext(ChatContext);
-  const { currentUser } = useContext(AuthContext);
 
   const renderAvatar = (photoURL, isCurrentUser) => (
     <div className={` ${isCurrentUser ? "justify-end" : "justify-start"} mb-1`}>
@@ -31,6 +30,12 @@ const MessageItem = ({
       />
     </div>
   );
+
+  const renderContent = () => {
+    if (message.type === "file") {
+      return <FileAttachment fileData={message.fileData} />;
+    }
+  };
 
   return (
     <div
@@ -70,6 +75,7 @@ const MessageItem = ({
                   <div className="text-start">{message.translatedText}</div>
                 </div>
               )}
+            {renderContent()}
           </div>
           {isHovered && (
             <div
