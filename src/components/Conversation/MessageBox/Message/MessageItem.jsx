@@ -31,11 +31,11 @@ const MessageItem = ({
     </div>
   );
 
-  const renderContent = () => {
-    if (message.type === "file") {
-      return <FileAttachment fileData={message.fileData} />;
-    }
-  };
+  // const renderContent = () => {
+  //   if (message.type === "file") {
+  //     return <FileAttachment fileData={message.fileData} />;
+  //   }
+  // };
 
   return (
     <div
@@ -52,31 +52,38 @@ const MessageItem = ({
         </div>
       ) : (
         <>
-          <div
-            className={`relative max-w-[60%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
-              isCurrentUser
-                ? "bg-blue-500 text-white"
-                : "bg-[#f2f2f2] text-black"
-            }`}
-            onClick={() => onMessageClick(message.id)}
-          >
-            <p className="break-word-mt text-start mb-1">
-              {isCurrentUser ? message.text : message.translatedText}
-            </p>
-            {message.translatedText &&
-              message.translatedText !== message.text && (
-                <div
-                  className={`relative items-center rounded-md p-0.5 px-2 ${
-                    isCurrentUser
-                      ? "right-0 bg-blue-400"
-                      : "left-0 bg-[#e6e6e6]"
-                  }`}
-                >
-                  <div className="text-start">{message.translatedText}</div>
-                </div>
-              )}
-            {renderContent()}
-          </div>
+          {message.type === "file" ? (
+            <FileAttachment fileData={message.fileData} />
+          ) : (
+            <div
+              className={`relative max-w-[60%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
+                isCurrentUser
+                  ? "bg-blue-500 text-white"
+                  : "bg-[#f2f2f2] text-black"
+              }`}
+              onClick={() => onMessageClick(message.id)}
+            >
+              <p className="break-word-mt text-start mb-1">
+                {isCurrentUser
+                  ? message.text
+                  : message.translatedText || message.text}
+              </p>
+              {message.translatedText &&
+                message.translatedText !== message.text && (
+                  <div
+                    className={`relative items-center rounded-md p-0.5 px-2 ${
+                      isCurrentUser
+                        ? "right-0 bg-blue-400"
+                        : "left-0 bg-[#e6e6e6]"
+                    }`}
+                  >
+                    <p className="text-start">
+                      {isCurrentUser ? message.translatedText : message.text}
+                    </p>
+                  </div>
+                )}
+            </div>
+          )}
           {isHovered && (
             <div
               className={`absolute flex gap-2 ${

@@ -13,7 +13,6 @@ const ReplyList = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data.replies]);
 
-  // Hàm format date thống nhất, giống với MessageList
   const formatDateTime = (date) => {
     if (!date || typeof date.toDate !== "function") return "";
     const messageDate = date.toDate();
@@ -28,15 +27,13 @@ const ReplyList = () => {
     });
   };
 
-  // Kiểm tra xem có nên hiển thị timestamp mới không (cách nhau 1 giờ)
   const shouldShowNewTimestamp = (currentDate, previousDate) => {
     if (!currentDate || !previousDate) return true;
     const timeDiff =
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
-    return timeDiff >= 3600000; // 1 giờ tính bằng milliseconds
+    return timeDiff >= 3600000; //
   };
 
-  // Tính toán timestamps trước khi render
   const getReplyWithTimestamp = () => {
     return data.replies.map((reply, index) => ({
       ...reply,
