@@ -4,6 +4,7 @@ import MessageMenu from "./MessageMenu";
 import MessageReplyInfo from "./MessageReplyInfo";
 import { ChatContext } from "../../../../contexts/ChatContext";
 import FileAttachment from "./FileAttachment";
+import { useSearchMessages } from "../../../../hooks/useSearchMessages";
 
 const MessageItem = ({
   message,
@@ -11,6 +12,9 @@ const MessageItem = ({
   isRemoved,
   isHovered,
   isSelected,
+  isSearchResult,
+  isActiveSearchResult,
+  searchQuery,
   onMessageClick,
   onSelectIcon,
   onRemove,
@@ -31,17 +35,39 @@ const MessageItem = ({
     </div>
   );
 
-  // const renderContent = () => {
-  //   if (message.type === "file") {
-  //     return <FileAttachment fileData={message.fileData} />;
-  //   }
-  // };
+  const highlightSearchText = (text, query) => {
+    if (!query || !isSearchResult) return text;
+
+    const parts = text.split(new RegExp(`(${query})`, "gi"));
+    return (
+      <span>
+        {parts.map((part, i) =>
+          part.toLowerCase() === query.toLowerCase() ? (
+            <span
+              key={i}
+              className={`bg-yellow-200 ${
+                isActiveSearchResult ? "bg-yellow-400" : ""
+              }`}
+            >
+              {part}
+            </span>
+          ) : (
+            part
+          )
+        )}
+      </span>
+    );
+  };
 
   return (
     <div
       className={`relative flex flex-col text-sm ${
         isCurrentUser ? "items-end" : "items-start"
+      } ${isSearchResult ? "scroll-mt-4" : ""} ${
+        isActiveSearchResult ? "bg-blue-50/10 rounded-lg" : ""
       }`}
+      ref={isActiveSearchResult ? scrollRef : null}
+      id={`message-${message.id}`}
     >
       {isCurrentUser ? <></> : renderAvatar(data?.user?.photoURL, false)}
       {isRemoved ? (
@@ -64,6 +90,12 @@ const MessageItem = ({
               onClick={() => onMessageClick(message.id)}
             >
               <p className="break-word-mt text-start mb-1">
+                {highlightSearchText(
+                  isCurrentUser
+                    ? message.text
+                    : message.translatedText || message.text,
+                  searchQuery
+                )}
                 {isCurrentUser
                   ? message.text
                   : message.translatedText || message.text}

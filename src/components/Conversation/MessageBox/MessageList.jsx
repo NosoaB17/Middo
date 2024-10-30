@@ -12,13 +12,14 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import MessageItem from "./Message/MessageItem";
+import { useSearchMessages } from "../../../hooks/useSearchMessages";
 
 import "../../../styles/scrollbar.css";
 
 const MessageList = ({ onOpenDiscussion }) => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
-
+  const { searchQuery, selectedIndex, searchResults } = useSearchMessages();
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const scrollRef = useRef();
@@ -139,11 +140,20 @@ const MessageList = ({ onOpenDiscussion }) => {
               onMouseLeave={() => setHoveredMessageId(null)}
             >
               <MessageItem
+                key={message.id}
                 message={message}
                 isCurrentUser={isCurrentUser}
                 isRemoved={isRemoved}
                 isHovered={isHovered}
                 isSelected={isSelected}
+                isSearchResult={data.searchResults.some(
+                  (r) => r.id === message.id
+                )}
+                isActiveSearchResult={
+                  data.searchResults[data.selectedSearchIndex]?.id ===
+                  message.id
+                }
+                searchQuery={data.searchQuery}
                 onMessageClick={handleMessageClick}
                 onSelectIcon={handleSelectIcon}
                 onRemove={handleRemoveMessage}
