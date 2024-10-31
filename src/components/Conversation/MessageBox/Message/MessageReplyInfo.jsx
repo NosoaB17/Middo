@@ -22,13 +22,11 @@ const MessageReplyInfo = ({
         hover:scale-105 active:scale-100
         cursor-pointer`}
     >
-      {/* Icon Discussion - Hiển thị khi hover */}
       <MessageSquare
         size={14}
         className="text-blue-500 hidden group-hover:inline-block"
       />
 
-      {/* Avatar Stack */}
       <div className="flex items-center">
         {displayedRepliers.map((replier, index) => (
           <div
@@ -62,7 +60,6 @@ const MessageReplyInfo = ({
         ))}
       </div>
 
-      {/* Reply Count */}
       <span className="text-xs text-gray-600 font-medium whitespace-nowrap">
         {replyCount} {replyCount === 1 ? "reply" : "replies"}
       </span>

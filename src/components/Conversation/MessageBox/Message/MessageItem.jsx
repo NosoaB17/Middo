@@ -1,10 +1,64 @@
-import { useContext } from "react";
-import { SmilePlus } from "lucide-react";
+import { useContext, useRef, useEffect } from "react";
 import MessageMenu from "./MessageMenu";
 import MessageReplyInfo from "./MessageReplyInfo";
 import { ChatContext } from "../../../../contexts/ChatContext";
 import FileAttachment from "./FileAttachment";
-import { useSearchMessages } from "../../../../hooks/useSearchMessages";
+
+const MessageAvatar = ({ photoURL }) => (
+  <div className="absolute justify-start">
+    <img
+      src={photoURL || "/default-avatar.png"}
+      alt="avatar"
+      className="w-6 h-6 rounded-full object-cover"
+    />
+  </div>
+);
+
+const MessageContent = ({ message, isCurrentUser, onClick }) => (
+  <div
+    className={`relative max-w-[60%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ml-8 ${
+      isCurrentUser ? "bg-blue-500 text-white" : "bg-[#f2f2f2] text-black"
+    }`}
+    onClick={onClick}
+  >
+    <p className="break-word-mt text-start mb-1">
+      {isCurrentUser ? message.text : message.translatedText || message.text}
+    </p>
+    {message.translatedText && message.translatedText !== message.text && (
+      <div
+        className={`relative items-center rounded-md p-0.5 px-2 ${
+          isCurrentUser ? "right-0 bg-blue-400" : "left-0 bg-[#e6e6e6]"
+        }`}
+      >
+        <p className="text-start">
+          {isCurrentUser ? message.translatedText : message.text}
+        </p>
+      </div>
+    )}
+  </div>
+);
+
+const MessageActions = ({
+  isCurrentUser,
+  messageId,
+  onRemove,
+  onReplyInDiscussion,
+  onSelectIcon,
+}) => (
+  <div
+    className={`absolute flex ${
+      isCurrentUser ? "right-0 mr-[60%]" : "left-0 ml-[60%]"
+    }`}
+  >
+    <MessageMenu
+      messageId={messageId}
+      onRemove={onRemove}
+      onReplyInDiscussion={onReplyInDiscussion}
+      onSelectIcon={onSelectIcon}
+      position={isCurrentUser ? "left" : "right"}
+    />
+  </div>
+);
 
 const MessageItem = ({
   message,
@@ -12,9 +66,6 @@ const MessageItem = ({
   isRemoved,
   isHovered,
   isSelected,
-  isSearchResult,
-  isActiveSearchResult,
-  searchQuery,
   onMessageClick,
   onSelectIcon,
   onRemove,
@@ -24,31 +75,23 @@ const MessageItem = ({
   repliers,
 }) => {
   const { data } = useContext(ChatContext);
-
-  const renderAvatar = (photoURL, isCurrentUser) => (
-    <div className={` ${isCurrentUser ? "justify-end" : "justify-start"} mb-1`}>
-      <img
-        src={photoURL || "/default-avatar.png"}
-        alt="avatar"
-        className="w-6 h-6 rounded-full object-cover"
-      />
-    </div>
-  );
+  const scrollRef = useRef(null);
 
   return (
     <div
       className={`relative flex flex-col text-sm ${
         isCurrentUser ? "items-end" : "items-start"
-      } ${isSearchResult ? "scroll-mt-4" : ""} ${
-        isActiveSearchResult ? "bg-blue-50/10 rounded-lg" : ""
       }`}
-      ref={isActiveSearchResult ? scrollRef : null}
+      ref={scrollRef}
       id={`message-${message.id}`}
     >
-      {isCurrentUser ? <></> : renderAvatar(data?.user?.photoURL, false)}
+      {!isCurrentUser && (
+        <MessageAvatar photoURL={data?.user?.photoURL} isCurrentUser={false} />
+      )}
+
       {isRemoved ? (
         <div className="px-3 py-2 md:py-1 bg-primary !bg-transparent me">
-          <div className="break-word-mt text-start text-base md:text-sm text-neutral-400">
+          <div className="break-word-mt text-start text-base md:text-sm ml-8 text-neutral-400">
             Removed a message
           </div>
         </div>
@@ -57,76 +100,24 @@ const MessageItem = ({
           {message.type === "file" ? (
             <FileAttachment fileData={message.fileData} />
           ) : (
-            <div
-              className={`relative max-w-[60%] rounded-2xl px-3 py-2 md:py-1 pb-3 md:pb-3 cursor-pointer ${
-                isCurrentUser
-                  ? "bg-blue-500 text-white"
-                  : "bg-[#f2f2f2] text-black"
-              }`}
+            <MessageContent
+              message={message}
+              isCurrentUser={isCurrentUser}
               onClick={() => onMessageClick(message.id)}
-            >
-              <p className="break-word-mt text-start mb-1">
-                {isCurrentUser
-                  ? message.text
-                  : message.translatedText || message.text}
-              </p>
-              {message.translatedText &&
-                message.translatedText !== message.text && (
-                  <div
-                    className={`relative items-center rounded-md p-0.5 px-2 ${
-                      isCurrentUser
-                        ? "right-0 bg-blue-400"
-                        : "left-0 bg-[#e6e6e6]"
-                    }`}
-                  >
-                    <p className="text-start">
-                      {isCurrentUser ? message.translatedText : message.text}
-                    </p>
-                  </div>
-                )}
-            </div>
+            />
           )}
           {isHovered && (
-            <div
-              className={`absolute flex gap-2 ${
-                isCurrentUser ? "right-0 mr-[60%]" : "left-0 ml-[60%]"
-              }`}
-            >
-              {isCurrentUser ? (
-                <>
-                  <MessageMenu
-                    messageId={message.id}
-                    onRemove={onRemove}
-                    onReplyInDiscussion={onReplyInDiscussion}
-                    position="left"
-                  />
-                  <div
-                    className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
-                    onClick={() => onSelectIcon(message.id)}
-                  >
-                    <SmilePlus size={18} />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    className="p-1 bg-neutral-50 rounded-full shadow-md hover:bg-gray-100"
-                    onClick={() => onSelectIcon(message.id)}
-                  >
-                    <SmilePlus size={18} />
-                  </div>
-                  <MessageMenu
-                    messageId={message.id}
-                    onRemove={onRemove}
-                    onReplyInDiscussion={onReplyInDiscussion}
-                    position="right"
-                  />
-                </>
-              )}
-            </div>
+            <MessageActions
+              isCurrentUser={isCurrentUser}
+              messageId={message.id}
+              onRemove={onRemove}
+              onReplyInDiscussion={onReplyInDiscussion}
+              onSelectIcon={onSelectIcon}
+            />
           )}
         </>
       )}
+
       {isSelected && (
         <span
           className={`text-xs mt-1 ${
@@ -137,6 +128,7 @@ const MessageItem = ({
           {formatTime(message.date)}
         </span>
       )}
+
       {replyCount > 0 && (
         <MessageReplyInfo
           replyCount={replyCount}

@@ -15,7 +15,6 @@ export const useMessageInput = (onSendMessage) => {
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Auto resize textarea
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
@@ -23,7 +22,6 @@ export const useMessageInput = (onSendMessage) => {
     }
   }, [message]);
 
-  // Language detection
   const debouncedDetectLanguage = useRef(
     debounce(async (text) => {
       if (text.trim()) {

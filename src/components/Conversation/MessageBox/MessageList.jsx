@@ -12,14 +12,12 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import MessageItem from "./Message/MessageItem";
-import { useSearchMessages } from "../../../hooks/useSearchMessages";
 
 import "../../../styles/scrollbar.css";
 
 const MessageList = ({ onOpenDiscussion }) => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
-  const { searchQuery, selectedIndex, searchResults } = useSearchMessages();
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const scrollRef = useRef();
@@ -57,7 +55,6 @@ const MessageList = ({ onOpenDiscussion }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data.messages]);
 
-  // Hàm format date thống nhất
   const formatDateTime = (date) => {
     if (!date || typeof date.toDate !== "function") return "";
     const messageDate = date.toDate();
@@ -72,12 +69,11 @@ const MessageList = ({ onOpenDiscussion }) => {
     });
   };
 
-  // Kiểm tra xem có nên hiển thị timestamp mới không (cách nhau 1 giờ)
   const shouldShowNewTimestamp = (currentDate, previousDate) => {
     if (!currentDate || !previousDate) return true;
     const timeDiff =
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
-    return timeDiff >= 3600000; // 1 giờ tính bằng milliseconds
+    return timeDiff >= 3600000;
   };
 
   const handleMessageClick = (messageId) => {
