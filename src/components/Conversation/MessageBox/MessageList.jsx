@@ -11,14 +11,13 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import MessageItem from "./MessageItem";
+import MessageItem from "./Message/MessageItem";
 
 import "../../../styles/scrollbar.css";
 
 const MessageList = ({ onOpenDiscussion }) => {
   const { data, dispatch } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
-
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const scrollRef = useRef();
@@ -56,7 +55,6 @@ const MessageList = ({ onOpenDiscussion }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data.messages]);
 
-  // Hàm format date thống nhất
   const formatDateTime = (date) => {
     if (!date || typeof date.toDate !== "function") return "";
     const messageDate = date.toDate();
@@ -71,12 +69,11 @@ const MessageList = ({ onOpenDiscussion }) => {
     });
   };
 
-  // Kiểm tra xem có nên hiển thị timestamp mới không (cách nhau 1 giờ)
   const shouldShowNewTimestamp = (currentDate, previousDate) => {
     if (!currentDate || !previousDate) return true;
     const timeDiff =
       currentDate.toDate().getTime() - previousDate.toDate().getTime();
-    return timeDiff >= 3600000; // 1 giờ tính bằng milliseconds
+    return timeDiff >= 3600000;
   };
 
   const handleMessageClick = (messageId) => {
@@ -139,11 +136,20 @@ const MessageList = ({ onOpenDiscussion }) => {
               onMouseLeave={() => setHoveredMessageId(null)}
             >
               <MessageItem
+                key={message.id}
                 message={message}
                 isCurrentUser={isCurrentUser}
                 isRemoved={isRemoved}
                 isHovered={isHovered}
                 isSelected={isSelected}
+                isSearchResult={data.searchResults.some(
+                  (r) => r.id === message.id
+                )}
+                isActiveSearchResult={
+                  data.searchResults[data.selectedSearchIndex]?.id ===
+                  message.id
+                }
+                searchQuery={data.searchQuery}
                 onMessageClick={handleMessageClick}
                 onSelectIcon={handleSelectIcon}
                 onRemove={handleRemoveMessage}
